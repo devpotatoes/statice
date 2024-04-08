@@ -1,0 +1,83 @@
+{
+  "name": "statice",
+  "displayName": "Statice",
+  "publisher": "devpotatoes",
+  "description": "Statice is a time-tracking extension for Visual Studio Code to explore your stats and boost your productivity.",
+  "icon": "assets/icon.png",
+  "version": "1.0.0",
+  "engines": {
+    "vscode": "^1.87.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "configuration": {
+      "title": "Statice",
+      "properties": {
+        "statice.theme": {
+          "type": "string",
+          "description": "Select your Statice theme. (Auto is adapted to your editor's theme)",
+          "default": "Auto",
+          "enum": [
+            "Light",
+            "Dark",
+            "Auto"
+          ]
+        },
+        "statice.notifications": {
+          "type": "boolean",
+          "description": "Display notifications.",
+          "default": true
+        }
+      }
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "staticeActivityBar",
+          "title": "Statice",
+          "icon": "assets/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "staticeActivityBar": [
+        {
+          "id": "welcomeViewHome",
+          "name": "Home"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "welcomeViewHome",
+        "contents": "Welcome to Statice ! \r\n\r\n Easily explore your stats with a simple interface \r\n [Dashboard](command:staticeOpenDashboard) \r\n Configure your own Statice \r\n [$(settings) Settings](command:staticeSettings) \r\n To learn more about how to use Statice \r\n [Documentation](command:staticeDocumentation)"
+      }
+    ],
+    "commands": []
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.87.0",
+    "@types/mocha": "^10.0.6",
+    "@types/node": "18.x",
+    "@typescript-eslint/eslint-plugin": "^7.0.2",
+    "@typescript-eslint/parser": "^7.0.2",
+    "eslint": "^8.56.0",
+    "typescript": "^5.3.3",
+    "@vscode/test-cli": "^0.0.6",
+    "@vscode/test-electron": "^2.3.9"
+  }
+}
