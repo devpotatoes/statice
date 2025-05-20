@@ -1,12 +1,12 @@
 import * as vscode from "vscode";
 import * as fs from "fs";
 
-const extensionVersion = "2.0.0";
+const extensionVersion = "2.1.0";
 
 let colorVariablesObj: { [key: string]: string } = {};
 
 async function checkUpdate(extensionPath: string) {
-	const statsFileData = fs.readFileSync(`${extensionPath}/src/data/stats.json`, "utf8");
+	const statsFileData = fs.readFileSync(`${extensionPath}/data/stats.json`, "utf8");
 	const statsFileObj = JSON.parse(statsFileData);
 	statsFileObj.extensionVersion = statsFileObj.extensionVersion || "1.0.0";
 
@@ -48,6 +48,13 @@ async function checkUpdate(extensionPath: string) {
 						time: dayObj.time * 60
 					}));
 				}
+			},
+			{
+				
+				version: "2.1.0",
+				migrateData: () => {
+					statsFileObj.extensionVersion = "2.1.0";
+				}
 			}
 		];
 
@@ -57,13 +64,13 @@ async function checkUpdate(extensionPath: string) {
 			const migrationObj = migrationsArray[i];
 			migrationObj.migrateData(statsFileObj);
 
-			fs.writeFileSync(`${extensionPath}/src/data/stats.json`, JSON.stringify(statsFileObj), "utf8");
+			fs.writeFileSync(`${extensionPath}/data/stats.json`, JSON.stringify(statsFileObj), "utf8");
 		};
 	};
 };
 
 async function checkExtensionData(extensionPath: string) {
-	if (fs.existsSync(`${extensionPath}/src/data/stats.json`) !== true) {
+	if (fs.existsSync(`${extensionPath}/data/stats.json`) !== true) {
 		try {
 			fs.mkdirSync(`${extensionPath}/data`);
 		} catch (error) {
@@ -78,7 +85,7 @@ async function checkExtensionData(extensionPath: string) {
 		};
 
 		try {
-			fs.writeFileSync(`${extensionPath}/src/data/stats.json`, JSON.stringify(dataObj), "utf8");
+			fs.writeFileSync(`${extensionPath}/data/stats.json`, JSON.stringify(dataObj), "utf8");
 		} catch (error) {
 			vscode.window.showErrorMessage("An error have occurred when launching the extension.", "OK");
 		};
@@ -145,7 +152,7 @@ export function activate(context: vscode.ExtensionContext) {
 		const currentDate = new Date();
 		const currentDateNumber = parseInt(`${currentDate.getFullYear()}${(currentDate.getMonth() + 1).toString().padStart(2, "0")}${currentDate.getDate().toString().padStart(2, "0")}`, 10);
 		const workspaceFolderName = vscode.workspace.workspaceFolders?.[0].name;
-		const statsFileData = fs.readFileSync(`${extensionPath}/src/data/stats.json`, "utf8");
+		const statsFileData = fs.readFileSync(`${extensionPath}/data/stats.json`, "utf8");
 		const statsFileObj = JSON.parse(statsFileData);
 
 		const dayHistoryIndex = statsFileObj.historyArray.findIndex((dayObj: { date: number; time: number; }) => dayObj.date === currentDateNumber);
@@ -184,7 +191,7 @@ export function activate(context: vscode.ExtensionContext) {
 		};
 
 		try {
-			fs.writeFileSync(`${extensionPath}/src/data/stats.json`, JSON.stringify(statsFileObj), "utf8");
+			fs.writeFileSync(`${extensionPath}/data/stats.json`, JSON.stringify(statsFileObj), "utf8");
 			sessionCodingTime += 60;
 		} catch (error) {
 			statusBarItem.tooltip = "An error occurred while updating your stats.";
@@ -269,7 +276,7 @@ export function activate(context: vscode.ExtensionContext) {
 				};
 
 				if (messageObj.id === "fetchStatsData") {
-					const statsFileData = fs.readFileSync(`${extensionPath}/src/data/stats.json`, "utf8");
+					const statsFileData = fs.readFileSync(`${extensionPath}/data/stats.json`, "utf8");
 					const statsFileObj = JSON.parse(statsFileData);
 					const date = new Date(messageObj.data.date);
 					let dateNumber = parseInt(`${date.getFullYear()}${(date.getMonth() + 1).toString().padStart(2, "0")}${date.getDate().toString().padStart(2, "0")}`, 10);
@@ -338,7 +345,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 							const dayDateNumber = parseInt(`${dayDate.getFullYear()}${(dayDate.getMonth() + 1).toString().padStart(2, "0")}${dayDate.getDate().toString().padStart(2, "0")}`, 10);
 
-							if (historySet.has(dayDateNumber) != true) {
+							if (historySet.has(dayDateNumber) !== true) {
 								allDaysPresent = false;
 								break;
 							};
@@ -607,7 +614,7 @@ export function activate(context: vscode.ExtensionContext) {
 							const statsFileDataBuffer = Buffer.from(await vscode.workspace.fs.readFile(statsFileDialog[0]));
 							const statsFileData = statsFileDataBuffer.toString("utf8");
 							const statsFileObj = JSON.parse(statsFileData);
-							fs.writeFileSync(`${extensionPath}/src/data/stats.json`, JSON.stringify(statsFileObj), "utf8");
+							fs.writeFileSync(`${extensionPath}/data/stats.json`, JSON.stringify(statsFileObj), "utf8");
 
 							await dashboardPanelObj?.webview.postMessage({
 								id: "importStatsStatus",
@@ -645,9 +652,9 @@ export function activate(context: vscode.ExtensionContext) {
 						}
 					});
 
-					if (statsFileDialog != undefined) {
+					if (statsFileDialog !== undefined) {
 						try {
-							const statsFileData = fs.readFileSync(`${extensionPath}/src/data/stats.json`, "utf8");
+							const statsFileData = fs.readFileSync(`${extensionPath}/data/stats.json`, "utf8");
 							const statsFileDataBuffer = Buffer.from(statsFileData, "utf8");
 							await vscode.workspace.fs.writeFile(statsFileDialog, statsFileDataBuffer);
 	
@@ -690,7 +697,7 @@ export function activate(context: vscode.ExtensionContext) {
 						const confirmationDaliog = await vscode.window.showWarningMessage("Are you sure you want to reset all your Statice stats ?", { modal: true }, "Yes", "No");
 
 						if (confirmationDaliog === "Yes") {
-							fs.writeFileSync(`${extensionPath}/src/data/stats.json`, JSON.stringify(dataObj), "utf8");
+							fs.writeFileSync(`${extensionPath}/data/stats.json`, JSON.stringify(dataObj), "utf8");
 
 							await dashboardPanelObj?.webview.postMessage({
 								id: "resetStatsStatus",

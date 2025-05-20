@@ -4,7 +4,7 @@
     "publisher": "devpotatoes",
     "icon": "./src/assets/icon.png",
     "description": "Statice is a time-tracking extension for Visual Studio Code to explore your coding habits, visualize your stats, and boost your productivity.",
-    "version": "2.0.0",
+    "version": "2.1.0",
     "repository": {
         "type": "git",
         "url": "https://github.com/devpotatoes/statice"

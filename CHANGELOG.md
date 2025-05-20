@@ -4,6 +4,12 @@ All notable changes to the "Statice" extension will be documented in this file.
 
 ## [Unreleased]
 
+## [2.1.0] - 2025-05-20
+
+### Changed
+
+- The ./src/data/stats.json file has been moved to ./data/stats.json.
+
 ## [2.0.0] - 2025-05-20
 
 ### Added
