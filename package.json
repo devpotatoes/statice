@@ -1,83 +1,87 @@
 {
-  "name": "statice",
-  "displayName": "Statice",
-  "publisher": "devpotatoes",
-  "description": "Statice is a time-tracking extension for Visual Studio Code to explore your stats and boost your productivity.",
-  "icon": "assets/icon.png",
-  "version": "1.0.0",
-  "engines": {
-    "vscode": "^1.87.0"
-  },
-  "categories": [
-    "Other"
-  ],
-  "activationEvents": [
-    "onStartupFinished"
-  ],
-  "main": "./out/extension.js",
-  "contributes": {
-    "configuration": {
-      "title": "Statice",
-      "properties": {
-        "statice.theme": {
-          "type": "string",
-          "description": "Select your Statice theme. (Auto is adapted to your editor's theme)",
-          "default": "Auto",
-          "enum": [
-            "Light",
-            "Dark",
-            "Auto"
-          ]
-        },
-        "statice.notifications": {
-          "type": "boolean",
-          "description": "Display notifications.",
-          "default": true
-        }
-      }
+    "name": "statice",
+    "displayName": "Statice",
+    "publisher": "devpotatoes",
+    "icon": "./src/assets/icon.png",
+    "description": "Statice is a time-tracking extension for Visual Studio Code to explore your coding habits, visualize your stats, and boost your productivity.",
+    "version": "2.0.0",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/devpotatoes/statice"
     },
-    "viewsContainers": {
-      "activitybar": [
-        {
-          "id": "staticeActivityBar",
-          "title": "Statice",
-          "icon": "assets/icon.svg"
-        }
-      ]
+    "pricing": "Free",
+    "engines": {
+        "vscode": "^1.98.0"
     },
-    "views": {
-      "staticeActivityBar": [
-        {
-          "id": "welcomeViewHome",
-          "name": "Home"
-        }
-      ]
-    },
-    "viewsWelcome": [
-      {
-        "view": "welcomeViewHome",
-        "contents": "Welcome to Statice ! \r\n\r\n Easily explore your stats with a simple interface \r\n [Dashboard](command:staticeOpenDashboard) \r\n Configure your own Statice \r\n [$(settings) Settings](command:staticeSettings) \r\n To learn more about how to use Statice \r\n [Documentation](command:staticeDocumentation)"
-      }
+    "license": "SEE LICENSE IN LICENSE",
+    "categories": [
+        "Other",
+        "Data Science",
+        "Visualization"
     ],
-    "commands": []
-  },
-  "scripts": {
-    "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "pretest": "npm run compile && npm run lint",
-    "lint": "eslint src --ext ts",
-    "test": "vscode-test"
-  },
-  "devDependencies": {
-    "@types/vscode": "^1.87.0",
-    "@types/mocha": "^10.0.6",
-    "@types/node": "18.x",
-    "@typescript-eslint/eslint-plugin": "^7.0.2",
-    "@typescript-eslint/parser": "^7.0.2",
-    "eslint": "^8.56.0",
-    "typescript": "^5.3.3",
-    "@vscode/test-cli": "^0.0.6",
-    "@vscode/test-electron": "^2.3.9"
-  }
+    "keywords": [
+        "Productivity",
+        "Statistics",
+        "Time-tracking",
+        "Dashboard",
+        "Insights"
+    ],
+    "activationEvents": [
+        "onStartupFinished"
+    ],
+    "main": "./out/extension.js",
+    "contributes": {
+        "configuration": {
+            "title": "Statice",
+            "properties": {
+                "statice.theme": {
+                    "type": "string",
+                    "description": "Select your Statice theme.",
+                    "default": "Dark",
+                    "enum": [
+                        "Light",
+                        "Dark"
+                    ]
+                },
+                "statice.notifications": {
+                    "type": "boolean",
+                    "description": "Enable notifications.",
+                    "default": true
+                }
+            }
+        },
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "staticeContainer",
+                    "title": "Statice",
+                    "icon": "./src/assets/icon.svg"
+                }
+            ]
+        },
+        "views": {
+            "staticeContainer": [
+                {
+                    "id": "staticeView",
+                    "name": ""
+                }
+            ]
+        },
+        "viewsWelcome": [
+            {
+                "view": "staticeView",
+                "contents": "Welcome to Statice !\n\nEasily explore and visualize your stats.\n\n[Open Dashboard](command:staticeOpenDashboard)\n\nCustomize Statice to suit your workflow and preferences.\n[Settings](command:staticeOpenSettings)\n\nLearn more about how to use Statice.\n[Documentation](command:staticeOpenDocumentation)\n\nSupport this extension by starring the project.\n[$(star-full) Statice Repository](https://github.com/devpotatoes/statice)\nYour feedback and support help it grow !"
+            }
+        ],
+        "commands": []
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./"
+    },
+    "devDependencies": {
+        "@types/node": "20.x",
+        "@types/vscode": "^1.98.0",
+        "typescript": "^5.7.3"
+    }
 }

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src https://*.vscode-resource.vscode-cdn.net; font-src https://*.vscode-resource.vscode-cdn.net; script-src https://*.vscode-resource.vscode-cdn.net https://cdn.jsdelivr.net/npm/chart.js;">
+	<link rel="stylesheet" href="../css/style.css">
+	<script src="../js/main.js" defer></script>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+	<title>Statice</title>
+</head>
+<body data-current-theme="">
+	<section id="appSplashSreen">
+		<svg viewBox="0 0 256 256" width="256" height="256">
+			<path d="M48 133.348C50.9455 133.348 53.3333 135.742 53.3333 138.696V213.565C53.3333 216.519 50.9455 218.913 48 218.913H16C13.0545 218.913 10.6667 216.519 10.6667 213.565V138.696C10.6667 135.742 13.0545 133.348 16 133.348H48Z"/>
+			<path d="M112 90.5652C114.946 90.5652 117.333 92.9595 117.333 95.913V213.565C117.333 216.519 114.946 218.913 112 218.913H80C77.0545 218.913 74.6667 216.519 74.6667 213.565V95.913C74.6667 92.9595 77.0545 90.5652 80 90.5652H112Z"/>
+			<path d="M176 5C178.946 5 181.333 7.3943 181.333 10.3478V213.565C181.333 216.519 178.946 218.913 176 218.913H144C141.054 218.913 138.667 216.519 138.667 213.565V10.3478C138.667 7.3943 141.054 5 144 5H176Z"/>
+			<path d="M240 47.7826C242.946 47.7826 245.333 50.1769 245.333 53.1304V213.565C245.333 216.519 242.946 218.913 240 218.913H208C205.054 218.913 202.667 216.519 202.667 213.565V53.1304C202.667 50.1769 205.054 47.7826 208 47.7826H240Z"/>
+			<path d="M0 234.957C0 232.003 2.38781 229.609 5.33333 229.609H250.667C253.612 229.609 256 232.003 256 234.957V245.652C256 248.606 253.612 251 250.667 251H5.33333C2.38781 251 0 248.606 0 245.652V234.957Z"/>
+		</svg>
+		<h1>STATICE</h1>
+	</section>
+	<header id="appHeader">
+		<svg class="appIcon" viewBox="0 0 256 256" width="256" height="256">
+			<path d="M48 133.348C50.9455 133.348 53.3333 135.742 53.3333 138.696V213.565C53.3333 216.519 50.9455 218.913 48 218.913H16C13.0545 218.913 10.6667 216.519 10.6667 213.565V138.696C10.6667 135.742 13.0545 133.348 16 133.348H48Z"/>
+			<path d="M112 90.5652C114.946 90.5652 117.333 92.9595 117.333 95.913V213.565C117.333 216.519 114.946 218.913 112 218.913H80C77.0545 218.913 74.6667 216.519 74.6667 213.565V95.913C74.6667 92.9595 77.0545 90.5652 80 90.5652H112Z"/>
+			<path d="M176 5C178.946 5 181.333 7.3943 181.333 10.3478V213.565C181.333 216.519 178.946 218.913 176 218.913H144C141.054 218.913 138.667 216.519 138.667 213.565V10.3478C138.667 7.3943 141.054 5 144 5H176Z"/>
+			<path d="M240 47.7826C242.946 47.7826 245.333 50.1769 245.333 53.1304V213.565C245.333 216.519 242.946 218.913 240 218.913H208C205.054 218.913 202.667 216.519 202.667 213.565V53.1304C202.667 50.1769 205.054 47.7826 208 47.7826H240Z"/>
+			<path d="M0 234.957C0 232.003 2.38781 229.609 5.33333 229.609H250.667C253.612 229.609 256 232.003 256 234.957V245.652C256 248.606 253.612 251 250.667 251H5.33333C2.38781 251 0 248.606 0 245.652V234.957Z"/>
+		</svg>
+		<p class="appName">Dashboard</p>
+		<button class="reloadBtn">
+			<svg viewBox="0 0 16 16" width="16" height="16">
+				<path d="M5.029 2.217a6.5 6.5 0 0 1 9.437 5.11.75.75 0 1 0 1.492-.154 8 8 0 0 0-14.315-4.03L.427 1.927A.25.25 0 0 0 0 2.104V5.75A.25.25 0 0 0 .25 6h3.646a.25.25 0 0 0 .177-.427L2.715 4.215a6.491 6.491 0 0 1 2.314-1.998ZM1.262 8.169a.75.75 0 0 0-1.22.658 8.001 8.001 0 0 0 14.315 4.03l1.216 1.216a.25.25 0 0 0 .427-.177V10.25a.25.25 0 0 0-.25-.25h-3.646a.25.25 0 0 0-.177.427l1.358 1.358a6.501 6.501 0 0 1-11.751-3.11.75.75 0 0 0-.272-.506Z"></path>
+			</svg>
+		</button>
+		<button class="dateBtn">
+			<svg viewBox="0 0 16 16" width="16" height="16">
+				<path d="M4.75 0a.75.75 0 0 1 .75.75V2h5V.75a.75.75 0 0 1 1.5 0V2h1.25c.966 0 1.75.784 1.75 1.75v10.5A1.75 1.75 0 0 1 13.25 16H2.75A1.75 1.75 0 0 1 1 14.25V3.75C1 2.784 1.784 2 2.75 2H4V.75A.75.75 0 0 1 4.75 0ZM2.5 7.5v6.75c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25V7.5Zm10.75-4H2.75a.25.25 0 0 0-.25.25V6h11V3.75a.25.25 0 0 0-.25-.25Z"></path>
+			</svg>
+		</button>
+		<button class="settingsBtn">
+			<svg viewBox="0 0 16 16" width="16" height="16">
+				<path d="M8 0a8.2 8.2 0 0 1 .701.031C9.444.095 9.99.645 10.16 1.29l.288 1.107c.018.066.079.158.212.224.231.114.454.243.668.386.123.082.233.09.299.071l1.103-.303c.644-.176 1.392.021 1.82.63.27.385.506.792.704 1.218.315.675.111 1.422-.364 1.891l-.814.806c-.049.048-.098.147-.088.294.016.257.016.515 0 .772-.01.147.038.246.088.294l.814.806c.475.469.679 1.216.364 1.891a7.977 7.977 0 0 1-.704 1.217c-.428.61-1.176.807-1.82.63l-1.102-.302c-.067-.019-.177-.011-.3.071a5.909 5.909 0 0 1-.668.386c-.133.066-.194.158-.211.224l-.29 1.106c-.168.646-.715 1.196-1.458 1.26a8.006 8.006 0 0 1-1.402 0c-.743-.064-1.289-.614-1.458-1.26l-.289-1.106c-.018-.066-.079-.158-.212-.224a5.738 5.738 0 0 1-.668-.386c-.123-.082-.233-.09-.299-.071l-1.103.303c-.644.176-1.392-.021-1.82-.63a8.12 8.12 0 0 1-.704-1.218c-.315-.675-.111-1.422.363-1.891l.815-.806c.05-.048.098-.147.088-.294a6.214 6.214 0 0 1 0-.772c.01-.147-.038-.246-.088-.294l-.815-.806C.635 6.045.431 5.298.746 4.623a7.92 7.92 0 0 1 .704-1.217c.428-.61 1.176-.807 1.82-.63l1.102.302c.067.019.177.011.3-.071.214-.143.437-.272.668-.386.133-.066.194-.158.211-.224l.29-1.106C6.009.645 6.556.095 7.299.03 7.53.01 7.764 0 8 0Zm-.571 1.525c-.036.003-.108.036-.137.146l-.289 1.105c-.147.561-.549.967-.998 1.189-.173.086-.34.183-.5.29-.417.278-.97.423-1.529.27l-1.103-.303c-.109-.03-.175.016-.195.045-.22.312-.412.644-.573.99-.014.031-.021.11.059.19l.815.806c.411.406.562.957.53 1.456a4.709 4.709 0 0 0 0 .582c.032.499-.119 1.05-.53 1.456l-.815.806c-.081.08-.073.159-.059.19.162.346.353.677.573.989.02.03.085.076.195.046l1.102-.303c.56-.153 1.113-.008 1.53.27.161.107.328.204.501.29.447.222.85.629.997 1.189l.289 1.105c.029.109.101.143.137.146a6.6 6.6 0 0 0 1.142 0c.036-.003.108-.036.137-.146l.289-1.105c.147-.561.549-.967.998-1.189.173-.086.34-.183.5-.29.417-.278.97-.423 1.529-.27l1.103.303c.109.029.175-.016.195-.045.22-.313.411-.644.573-.99.014-.031.021-.11-.059-.19l-.815-.806c-.411-.406-.562-.957-.53-1.456a4.709 4.709 0 0 0 0-.582c-.032-.499.119-1.05.53-1.456l.815-.806c.081-.08.073-.159.059-.19a6.464 6.464 0 0 0-.573-.989c-.02-.03-.085-.076-.195-.046l-1.102.303c-.56.153-1.113.008-1.53-.27a4.44 4.44 0 0 0-.501-.29c-.447-.222-.85-.629-.997-1.189l-.289-1.105c-.029-.11-.101-.143-.137-.146a6.6 6.6 0 0 0-1.142 0ZM11 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM9.5 8a1.5 1.5 0 1 0-3.001.001A1.5 1.5 0 0 0 9.5 8Z"></path>
+			</svg>
+		</button>
+		<button class="accountBtn">
+			<svg viewBox="0 0 16 16" width="16" height="16">
+				<path d="M10.561 8.073a6.005 6.005 0 0 1 3.432 5.142.75.75 0 1 1-1.498.07 4.5 4.5 0 0 0-8.99 0 .75.75 0 0 1-1.498-.07 6.004 6.004 0 0 1 3.431-5.142 3.999 3.999 0 1 1 5.123 0ZM10.5 5a2.5 2.5 0 1 0-5 0 2.5 2.5 0 0 0 5 0Z"></path>
+			</svg>
+		</button>
+	</header>
+	<main id="appMain">
+		<div class="dashboardContainer">
+			<div class="moduleWrapper">
+				<div class="totalTimeModule module">
+					<div class="moduleHeader">
+						<h4>Total code time</h4>
+					</div>
+					<div class="moduleInfoWrapper">
+						<span></span>
+					</div>
+				</div>
+				<div class="todayTimeModule module">
+					<div class="moduleHeader">
+						<h4>Today code time</h4>
+					</div>
+					<div class="moduleInfoWrapper">
+						<span></span>
+						<div class="progressChart">
+							<span></span>
+							<svg viewBox="0 0 36 36">
+								<path d="M18 2.0845a 15.9155 15.9155 0 0 1 0 31.831a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+								<path d="M18 2.0845a 15.9155 15.9155 0 0 1 0 31.831a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+							</svg>
+						</div>
+					</div>
+				</div>
+				<div class="weekStreakModule module">
+					<div class="moduleHeader">
+						<h4>Week streaks</h4>
+					</div>
+					<div class="moduleInfoWrapper">
+						<div class="streakGrid">
+							<div></div>
+							<div></div>
+							<div></div>
+							<div></div>
+							<div></div>
+							<div></div>
+							<div></div>
+						</div>
+						<div class="progressChart">
+							<span>0%</span>
+							<svg viewBox="0 0 36 36">
+								<path d="M18 2.0845a 15.9155 15.9155 0 0 1 0 31.831a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+								<path d="M18 2.0845a 15.9155 15.9155 0 0 1 0 31.831a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+							</svg>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="weekChartModule module">
+				<div class="moduleHeader">
+					<h4>Graphic code time</h4>
+					<span></span>
+				</div>
+				<div class="lineChart">
+					<canvas id="ctx"></canvas>
+				</div>
+			</div>
+			<div class="globalStatsModule module">
+				<div class="moduleHeader">
+					<h4>Languages</h4>
+				</div>
+				<div class="moduleLocked">
+					<svg viewBox="0 0 16 16" width="16" height="16">
+						<path d="m8.533.133 5.25 1.68A1.75 1.75 0 0 1 15 3.48V7c0 1.566-.32 3.182-1.303 4.682-.983 1.498-2.585 2.813-5.032 3.855a1.697 1.697 0 0 1-1.33 0c-2.447-1.042-4.049-2.357-5.032-3.855C1.32 10.182 1 8.566 1 7V3.48a1.75 1.75 0 0 1 1.217-1.667l5.25-1.68a1.748 1.748 0 0 1 1.066 0Zm-.61 1.429.001.001-5.25 1.68a.251.251 0 0 0-.174.237V7c0 1.36.275 2.666 1.057 3.859.784 1.194 2.121 2.342 4.366 3.298a.196.196 0 0 0 .154 0c2.245-.957 3.582-2.103 4.366-3.297C13.225 9.666 13.5 8.358 13.5 7V3.48a.25.25 0 0 0-.174-.238l-5.25-1.68a.25.25 0 0 0-.153 0ZM9.5 6.5c0 .536-.286 1.032-.75 1.3v2.45a.75.75 0 0 1-1.5 0V7.8A1.5 1.5 0 1 1 9.5 6.5Z"></path>
+					</svg>
+					<p>You need to spend some time in your editor before these stats become available.</p>
+				</div>
+				<div class="globalStatsModuleBody">
+					<div class="barChart languages">
+						<div class="barChartRank1"></div>
+						<div class="barChartRank2"></div>
+						<div class="barChartRank3"></div>
+						<div class="barChartRank4"></div>
+						<div class="barChartRank5"></div>
+						<div class="barChartRank6"></div>
+					</div>
+					<div class="barChartInfo" data-language-rank="1">
+						<div class="infoRank"></div>
+						<span class="infoName"></span>
+						<span class="infoValue"></span>
+					</div>
+					<div class="barChartInfo" data-language-rank="2">
+						<div class="infoRank"></div>
+						<span class="infoName"></span>
+						<span class="infoValue"></span>
+					</div>
+					<div class="barChartInfo" data-language-rank="3">
+						<div class="infoRank"></div>
+						<span class="infoName"></span>
+						<span class="infoValue"></span>
+					</div>
+					<div class="barChartInfo" data-language-rank="4">
+						<div class="infoRank"></div>
+						<span class="infoName"></span>
+						<span class="infoValue"></span>
+					</div>
+					<div class="barChartInfo" data-language-rank="5">
+						<div class="infoRank"></div>
+						<span class="infoName"></span>
+						<span class="infoValue"></span>
+					</div>
+					<div class="barChartInfo" data-language-rank="6">
+						<div class="infoRank"></div>
+						<span class="infoName"></span>
+						<span class="infoValue"></span>
+					</div>
+				</div>
+			</div>
+			<div class="globalStatsModule module">
+				<div class="moduleHeader">
+					<h4>Projects</h4>
+				</div>
+				<div class="moduleLocked">
+					<svg viewBox="0 0 16 16" width="16" height="16">
+						<path d="m8.533.133 5.25 1.68A1.75 1.75 0 0 1 15 3.48V7c0 1.566-.32 3.182-1.303 4.682-.983 1.498-2.585 2.813-5.032 3.855a1.697 1.697 0 0 1-1.33 0c-2.447-1.042-4.049-2.357-5.032-3.855C1.32 10.182 1 8.566 1 7V3.48a1.75 1.75 0 0 1 1.217-1.667l5.25-1.68a1.748 1.748 0 0 1 1.066 0Zm-.61 1.429.001.001-5.25 1.68a.251.251 0 0 0-.174.237V7c0 1.36.275 2.666 1.057 3.859.784 1.194 2.121 2.342 4.366 3.298a.196.196 0 0 0 .154 0c2.245-.957 3.582-2.103 4.366-3.297C13.225 9.666 13.5 8.358 13.5 7V3.48a.25.25 0 0 0-.174-.238l-5.25-1.68a.25.25 0 0 0-.153 0ZM9.5 6.5c0 .536-.286 1.032-.75 1.3v2.45a.75.75 0 0 1-1.5 0V7.8A1.5 1.5 0 1 1 9.5 6.5Z"></path>
+					</svg>
+					<p>You need to spend some time in your editor before these stats become available.</p>
+				</div>
+				<div class="globalStatsModuleBody">
+					<div class="barChart projects">
+						<div class="barChartRank1"></div>
+						<div class="barChartRank2"></div>
+						<div class="barChartRank3"></div>
+						<div class="barChartRank4"></div>
+						<div class="barChartRank5"></div>
+						<div class="barChartRank6"></div>
+					</div>
+					<div class="barChartInfo" data-project-rank="1">
+						<div class="infoRank"></div>
+						<span class="infoName"></span>
+						<span class="infoValue"></span>
+					</div>
+					<div class="barChartInfo" data-project-rank="2">
+						<div class="infoRank"></div>
+						<span class="infoName"></span>
+						<span class="infoValue"></span>
+					</div>
+					<div class="barChartInfo" data-project-rank="3">
+						<div class="infoRank"></div>
+						<span class="infoName"></span>
+						<span class="infoValue"></span>
+					</div>
+					<div class="barChartInfo" data-project-rank="4">
+						<div class="infoRank"></div>
+						<span class="infoName"></span>
+						<span class="infoValue"></span>
+					</div>
+					<div class="barChartInfo" data-project-rank="5">
+						<div class="infoRank"></div>
+						<span class="infoName"></span>
+						<span class="infoValue"></span>
+					</div>
+					<div class="barChartInfo" data-project-rank="6">
+						<div class="infoRank"></div>
+						<span class="infoName"></span>
+						<span class="infoValue"></span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+	<div id="dialogBoxContainer">
+		<div id="datePickerMenu">
+			<div class="header">
+				<span class="month">Apr</span>
+				<input class="yearInput" type="number">
+				<button class="previousMonthBtn">
+					<svg viewBox="0 0 16 16" width="16" height="16">
+						<path
+							d="M9.78 12.78a.75.75 0 0 1-1.06 0L4.47 8.53a.75.75 0 0 1 0-1.06l4.25-4.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042L6.06 8l3.72 3.72a.75.75 0 0 1 0 1.06Z">
+						</path>
+					</svg>
+				</button>
+				<button class="nextMonthBtn">
+					<svg viewBox="0 0 16 16" width="16" height="16">
+						<path
+							d="M6.22 3.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L9.94 8 6.22 4.28a.75.75 0 0 1 0-1.06Z">
+						</path>
+					</svg>
+				</button>
+			</div>
+			<div class="body">
+				<div class="weekdays">
+					<div>Mo</div>
+					<div>Tu</div>
+					<div>We</div>
+					<div>Th</div>
+					<div>Fr</div>
+					<div>Sa</div>
+					<div>Su</div>
+				</div>
+				<div class="daysGrid"></div>
+			</div>
+			<div class="footer">
+				<button class="cancelDatePickerBtn">Cancel</button>
+				<button class="thisWeekBtn">This week</button>
+			</div>
+		</div>
+		<div id="settingsMenu" class="menuDialogBox">
+			<div class="header">
+				<p>Settings</p>
+				<button class="closeMenuBtn">
+					<svg viewBox="0 0 16 16" width="16" height="16">
+						<path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path>
+					</svg>
+				</button>
+			</div>
+			<div class="body">
+				<div>
+					<p>Themes</p>
+					<div class="themeSelectContainer">
+						<div class="themeSelectInput" data-theme="light">
+							<div class="iconContainer">
+								<svg viewBox="0 0 16 16" width="16" height="16">
+									<path d="M8 12a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm0-1.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Zm5.657-8.157a.75.75 0 0 1 0 1.061l-1.061 1.06a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734l1.06-1.06a.75.75 0 0 1 1.06 0Zm-9.193 9.193a.75.75 0 0 1 0 1.06l-1.06 1.061a.75.75 0 1 1-1.061-1.06l1.06-1.061a.75.75 0 0 1 1.061 0ZM8 0a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0V.75A.75.75 0 0 1 8 0ZM3 8a.75.75 0 0 1-.75.75H.75a.75.75 0 0 1 0-1.5h1.5A.75.75 0 0 1 3 8Zm13 0a.75.75 0 0 1-.75.75h-1.5a.75.75 0 0 1 0-1.5h1.5A.75.75 0 0 1 16 8Zm-8 5a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0v-1.5A.75.75 0 0 1 8 13Zm3.536-1.464a.75.75 0 0 1 1.06 0l1.061 1.06a.75.75 0 0 1-1.06 1.061l-1.061-1.06a.75.75 0 0 1 0-1.061ZM2.343 2.343a.75.75 0 0 1 1.061 0l1.06 1.061a.751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018l-1.06-1.06a.75.75 0 0 1 0-1.06Z"></path>
+								</svg>
+							</div>
+							<div class="selectIndicator">
+								<div></div>
+								<p>Light</p>
+							</div>
+						</div>
+						<div class="themeSelectInput" data-theme="dark">
+							<div class="iconContainer">
+								<svg viewBox="0 0 16 16" width="16" height="16">
+									<path d="M9.598 1.591a.749.749 0 0 1 .785-.175 7.001 7.001 0 1 1-8.967 8.967.75.75 0 0 1 .961-.96 5.5 5.5 0 0 0 7.046-7.046.75.75 0 0 1 .175-.786Zm1.616 1.945a7 7 0 0 1-7.678 7.678 5.499 5.499 0 1 0 7.678-7.678Z"></path>
+								</svg>
+							</div>
+							<div class="selectIndicator">
+								<div></div>
+								<p>Dark</p>
+							</div>
+						</div>
+					</div> 
+					<p>Your default theme is based on your VS Code settings.</p>
+				</div>
+				<hr>
+				<div>
+					<p>Enable notifications</p>
+					<div id="enableNotificationsSettingToggleSwitch" class="toggleSwitch">
+						<div class="sliderStatus">
+							<div>
+								<svg viewBox="0 0 16 16" width="16" height="16">
+									<path d="M8 2a.75.75 0 0 1 .75.75v11.5a.75.75 0 0 1-1.5 0V2.75A.75.75 0 0 1 8 2Z"></path>
+								</svg>
+							</div>
+							<div>
+								<svg viewBox="0 0 16 16" width="16" height="16">
+									<path fill-rule="evenodd" d="M8 12.5a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12Z"></path>
+								</svg>
+							</div>
+						</div>
+						<div class="slider"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="accountMenu" class="menuDialogBox">
+			<div class="header">
+				<p>Account</p>
+				<button class="closeMenuBtn">
+					<svg viewBox="0 0 16 16" width="16" height="16">
+						<path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path>
+					</svg>
+				</button>
+			</div>
+			<div class="body">
+				<div>
+					<button class="importStatsBtn">Import stats</button>
+					<button class="exportStatsBtn">Export stats</button>
+					<button class="resetStatsBtn">Reset stats</button>
+				</div>
+				<div>
+					<p>v2.0.0</p>
+				</div>
+			</div>
+		</div>
+	</div>
+<body>
+</html>
