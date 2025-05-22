@@ -4,6 +4,12 @@ All notable changes to the "Statice" extension will be documented in this file.
 
 ## [Unreleased]
 
+## [2.2.0] - 2025-05-22
+
+### Fixed
+
+- Fixed an issue in the checkUpdates function that caused unexpected behavior.
+
 ## [2.1.0] - 2025-05-20
 
 ### Changed

@@ -37,10 +37,10 @@ exports.activate = activate;
 exports.deactivate = deactivate;
 const vscode = __importStar(require("vscode"));
 const fs = __importStar(require("fs"));
-const extensionVersion = "2.1.0";
+const extensionVersion = "2.2.0";
 let colorVariablesObj = {};
-async function checkUpdate(extensionPath) {
-    const statsFileData = fs.readFileSync(`${extensionPath}/data/stats.json`, "utf8");
+async function checkUpdates(extensionPath) {
+    const statsFileData = fs.readFileSync(`${extensionPath}/src/data/stats.json`, "utf8") || fs.readFileSync(`${extensionPath}/data/stats.json`, "utf8");
     const statsFileObj = JSON.parse(statsFileData);
     statsFileObj.extensionVersion = statsFileObj.extensionVersion || "1.0.0";
     if (statsFileObj.extensionVersion !== extensionVersion) {
@@ -78,6 +78,13 @@ async function checkUpdate(extensionPath) {
                 version: "2.1.0",
                 migrateData: () => {
                     statsFileObj.extensionVersion = "2.1.0";
+                }
+            },
+            {
+                version: "2.2.0",
+                migrateData: () => {
+                    statsFileObj.extensionVersion = "2.2.0";
+                    fs.rmSync(`${extensionPath}/src/data/`, { recursive: true, force: true });
                 }
             }
         ];
@@ -141,7 +148,7 @@ async function newNotification(duration, message, forced = false) {
 function activate(context) {
     const extensionPath = context.extensionPath;
     checkExtensionData(extensionPath);
-    checkUpdate(extensionPath);
+    checkUpdates(extensionPath);
     let sessionCodingTime = 0;
     const tempStatsArray = [];
     let statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);

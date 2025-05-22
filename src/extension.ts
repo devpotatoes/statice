@@ -1,12 +1,12 @@
 import * as vscode from "vscode";
 import * as fs from "fs";
 
-const extensionVersion = "2.1.0";
+const extensionVersion = "2.2.0";
 
 let colorVariablesObj: { [key: string]: string } = {};
 
-async function checkUpdate(extensionPath: string) {
-	const statsFileData = fs.readFileSync(`${extensionPath}/data/stats.json`, "utf8");
+async function checkUpdates(extensionPath: string) {
+	const statsFileData = fs.readFileSync(`${extensionPath}/src/data/stats.json`, "utf8") || fs.readFileSync(`${extensionPath}/data/stats.json`, "utf8");
 	const statsFileObj = JSON.parse(statsFileData);
 	statsFileObj.extensionVersion = statsFileObj.extensionVersion || "1.0.0";
 
@@ -54,6 +54,15 @@ async function checkUpdate(extensionPath: string) {
 				version: "2.1.0",
 				migrateData: () => {
 					statsFileObj.extensionVersion = "2.1.0";
+				}
+			},
+			{
+				
+				version: "2.2.0",
+				migrateData: () => {
+					statsFileObj.extensionVersion = "2.2.0";
+
+					fs.rmSync(`${extensionPath}/src/data/`, { recursive: true, force: true });
 				}
 			}
 		];
@@ -119,7 +128,7 @@ export function activate(context: vscode.ExtensionContext) {
 	const extensionPath = context.extensionPath;
 
 	checkExtensionData(extensionPath);
-	checkUpdate(extensionPath);
+	checkUpdates(extensionPath);
 
 	let sessionCodingTime = 0;
 	const tempStatsArray: {
