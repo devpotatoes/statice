@@ -1,0 +1,11 @@
+{
+    "message": {
+        "meta": {
+            "ref": "../warningAlert.wco",
+            "description": "Warning message."
+        },
+        "required": true,
+        "type": "str",
+        "default": "Warning"
+    }
+}

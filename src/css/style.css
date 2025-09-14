@@ -18,6 +18,7 @@
     --levelColor0: 22, 27, 34;
     --mainBackgroundColor: 13, 17, 23;
     --menuBackgroundColor: 22, 27, 34;
+    --pureWhiteColor: 255, 255, 255;
     --redBtnColor: 248, 81, 73;
     --textColor1: 240, 246, 252;
     --textColor2: 145, 152, 161;
@@ -59,15 +60,15 @@
 }
 
 body {
+    align-items: center;
     background-color: rgba(var(--mainBackgroundColor), 1);
+    display: flex;
+    flex-direction: column;
     font-family: NotoSans-Regular;
     height: auto;
+    justify-content: center;
+    padding: 0px 0px 0px 0px;
     width: auto;
-	padding: 0px 0px 0px 0px;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
 }
 
 body[data-current-theme="light"] {
@@ -90,6 +91,7 @@ body[data-current-theme="light"] {
     --levelColor0: 235, 237, 240;
     --mainBackgroundColor: 255, 255, 255;
     --menuBackgroundColor: 255, 255, 255;
+    --pureWhiteColor: 255, 255, 255;
     --redBtnColor: 164, 14, 38;
     --textColor1: 31, 35, 40;
     --textColor2: 89, 99, 110;
@@ -98,38 +100,38 @@ body[data-current-theme="light"] {
 }
 
 #appSplashSreen {
-	position: fixed;
+    align-items: center;
+    background-color: rgba(var(--mainBackgroundColor), 1);
+    column-gap: 16px;
+    display: flex;
+    height: 100vh;
+    justify-content: center;
     left: 0;
+    position: fixed;
     top: 0;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	background-color: rgba(var(--mainBackgroundColor), 1);
-	width: 100%;
-	height: 100vh;
-	column-gap: 16px;
-	z-index: 999;
     user-select: none;
+    width: 100%;
+    z-index: 999;
 }
 
 #appSplashSreen > svg {
     animation: splashScreenIconDrop 1.25s cubic-bezier(0.45, 0.85, 0.65, 1) forwards;
     display: block;
-    width: 96px;
+    fill: rgba(170, 175, 185, 1);
     height: 96px;
     opacity: 0;
-    fill: rgba(170, 175, 185, 1);
+    width: 96px;
 }
 
 #appSplashSreen > h1 {
-    font-family: MontserratAlt1-Regular;
-    font-size: 42px;
-    line-height: 96px;
     animation: splashScreenFadeInText 0.75s ease-out forwards;
     animation-delay: 1.25s;
-    opacity: 0;
-    font-weight: normal;
     color: rgba(170, 175, 185, 1);
+    font-family: MontserratAlt1-Regular;
+    font-size: 42px;
+    font-weight: normal;
+    line-height: 96px;
+    opacity: 0;
 }
 
 error-alert {
@@ -207,61 +209,58 @@ p.appName {
     width: 16px;
 }
 
-button.settingsBtn > svg {
-    transform: translate(1px, 1px);
-}
-
 #appMain {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	width: 87.5%;
-	height: fit-content;
+    align-items: center;
+    display: flex;
+    height: fit-content;
+    justify-content: center;
+    width: 87.5%;
 }
 
 div.dashboardContainer {
-	height: fit-content;
-	width: 100%;
-	max-width: 1375px;
-	display: flex;
-	flex-direction: column;
-	padding: 24px 0px 24px 0px;
-	row-gap: 16px;
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+    max-width: 1375px;
+    padding: 24px 0px 24px 0px;
+    row-gap: 16px;
+    width: 100%;
 }
 
 div.moduleWrapper {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	width: 100%;
-	column-gap: 16px;
+    align-items: center;
+    column-gap: 16px;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
 }
 
 div.module {
-	flex: 1;
-    padding: 0px 0px 0px 0px;
-	flex-direction: column;
-	min-width: 256px;
-	height: fit-content;
-	border: 1px solid rgba(var(--borderColor), 1);
+    background-color: rgba(var(--mainBackgroundColor), 1);
+    border: 1px solid rgba(var(--borderColor), 1);
     border-radius: 6px;
-	display: flex;
-	justify-content: space-between;
-	background-color: rgba(var(--mainBackgroundColor), 1);
-	column-gap: 32px;
+    column-gap: 32px;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    height: fit-content;
+    justify-content: space-between;
+    min-width: 256px;
+    padding: 0px 0px 0px 0px;
 }
 
 div.moduleHeader {
-	padding: 16px 16px 16px 16px;
-	border-radius: 6px 6px 0px 0px;
-	background-color: rgba(var(--menuBackgroundColor), 1);
-	border-bottom: solid 1px rgba(var(--borderColor), 1);
+    background-color: rgba(var(--menuBackgroundColor), 1);
+    border-bottom: solid 1px rgba(var(--borderColor), 1);
+    border-radius: 6px 6px 0px 0px;
+    padding: 16px 16px 16px 16px;
 }
 
 div.moduleHeader > h4 {
-    font-family: NotoSans-SemiBold;
-	font-size: 14px;
     color: rgba(var(--textColor1), 1);
+    font-family: NotoSans-SemiBold;
+    font-size: 14px;
+    font-weight: normal;
 }
 
 div.totalTimeModule,
@@ -271,68 +270,68 @@ div.weekStreakModule {
 }
 
 div.module > div.moduleInfoWrapper {
-    padding: 16px 16px 16px 16px;
-	display: flex;
-    justify-content: space-between;
     align-items: center;
-	column-gap: 16px;
+    column-gap: 16px;
+    display: flex;
     height: 100%;
+    justify-content: space-between;
+    padding: 16px 16px 16px 16px;
 }
 
 div.module > div.moduleInfoWrapper > span {
-	font-size: 20px;
     color: rgba(var(--textColor2), 1);
+    font-size: 20px;
 }
 
 div.module > div.moduleInfoWrapper > div.progressChart {
-    display: flex;
-    justify-content: center;
     align-items: center;
-	width: 64px;
-	height: 64px;
-	position: relative;
+    display: flex;
+    height: 64px;
+    justify-content: center;
+    position: relative;
+    width: 64px;
 }
 
 div.module > div.moduleInfoWrapper > div.progressChart > svg > path:nth-of-type(1) {
-	fill: transparent;
-	stroke: rgba(var(--headerBtnHover), 0.2);
-	stroke-width: 2px;
     border-radius: 50%;
+    fill: transparent;
+    stroke: rgba(var(--headerBtnHover), 0.2);
+    stroke-width: 2px;
 }
 
 div.module > div.moduleInfoWrapper > div.progressChart > svg > path:nth-of-type(2) {
     fill: transparent;
-	stroke-width: 2px;
-	stroke-linecap: round;
-	stroke-dasharray: 0, 100;
     stroke: rgba(var(--greenLevelColor1), 1);
+    stroke-dasharray: 0, 100;
+    stroke-linecap: round;
+    stroke-width: 2px;
 }
 
 div.module > div.moduleInfoWrapper > div.progressChart > span {
-	color: rgba(var(--textColor2), 1);
-	font-size: 16px;
-	position: absolute;
+    color: rgba(var(--textColor2), 1);
+    font-size: 16px;
+    position: absolute;
     text-wrap: nowrap;
 }
 
 div.streakGrid {
-	display: flex;
-	column-gap: 4px;
+    column-gap: 4px;
+    display: flex;
 }
 
 div.streakGrid > div {
-	height: 16px;
-	width: 16px;
-	border-radius: 3px;
-	border: solid 1px rgba(0, 0, 0, 0);
+    border: solid 1px rgba(0, 0, 0, 0);
+    border-radius: 3px;
+    height: 16px;
+    width: 16px;
 }
 
 div.weekChartModule {
-	padding: 0px 0px 0px 0px;
-	width: 100%;
-	height: fit-content;
-	border: solid 1px rgba(var(--borderColor), 1);
-	flex-direction: column;
+    border: solid 1px rgba(var(--borderColor), 1);
+    flex-direction: column;
+    height: fit-content;
+    padding: 0px 0px 0px 0px;
+    width: 100%;
 }
 
 div.weekChartModule > div.moduleHeader {
@@ -341,125 +340,125 @@ div.weekChartModule > div.moduleHeader {
 }
 
 div.weekChartModule > div.moduleHeader > span {
-	font-size: 12px;
+    font-size: 12px;
 }
 
 div.lineChart {
-	width: 100%;
-	padding: 16px 16px 16px 16px;
+    padding: 16px 16px 16px 16px;
+    width: 100%;
 }
 
 #ctx {
-	height: auto;
-	width: 100%;
+    height: auto;
+    width: 100%;
 }
 
 div.globalStatsModule {
-	border: solid 1px rgba(var(--borderColor), 1);
+    border: solid 1px rgba(var(--borderColor), 1);
 }
 
 div.moduleLocked {
-    display: flex;
-    justify-content: center;
     align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     padding: 32px 16px 16px 16px;
     row-gap: 16px;
-    flex-direction: column;
 }
 
 div.moduleLocked > svg {
-    width: 32px;
-    height: 32px;
     fill: rgba(var(--textColor2), 1);
+    height: 32px;
+    width: 32px;
 }
 
 div.moduleLocked > p {
-    font-size: 14px;
     color: rgba(var(--textColor2), 1);
+    font-size: 14px;
 }
 
 div.globalStatsModuleBody {
-    padding: 32px 16px 16px 16px;
-	flex-direction: column;
-	row-gap: 16px;
     display: none;
+    flex-direction: column;
+    padding: 32px 16px 16px 16px;
+    row-gap: 16px;
 }
 
 div.barChart {
-	width: 100%;
-	height: 8px;
-	border-radius: 16px;
-	display: flex;
-	margin: 0px 0px 8px 0px;
+    border-radius: 16px;
+    display: flex;
+    height: 8px;
+    margin: 0px 0px 8px 0px;
+    width: 100%;
 }
 
 div.barChart div {
-	height: 100%;
+    height: 100%;
 }
 
 div.barChart div:first-child {
-	border-radius: 16px 0px 0px 16px;
+    border-radius: 16px 0px 0px 16px;
 }
 
 div.barChart div:last-child {
-	border-radius: 0px 16px 16px 0px;
+    border-radius: 0px 16px 16px 0px;
 }
 
 div.barChartInfo {
-	width: 100%;
-	column-gap: 8px;
-	display: flex;
-	align-items: center;
+    align-items: center;
+    column-gap: 8px;
+    display: flex;
+    width: 100%;
 }
 
 div.barChartInfo > div.infoRank {
-	width: 10px;
-	height: 10px;
-	border-radius: 50%;
+    border-radius: 50%;
+    height: 10px;
+    width: 10px;
 }
 
 div.barChartRank1,
 div.barChartInfo[data-language-rank="1"] > div.infoRank,
 div.barChartInfo[data-project-rank="1"] > div.infoRank {
-	background-color: rgba(var(--greenLevelColor4), 1);
+    background-color: rgba(var(--greenLevelColor4), 1);
 }
 
 div.barChartRank2,
 div.barChartInfo[data-language-rank="2"] > div.infoRank,
 div.barChartInfo[data-project-rank="2"] > div.infoRank {
-	background-color: rgba(var(--greenLevelColor3), 0.85);
+    background-color: rgba(var(--greenLevelColor3), 0.85);
 }
 
 div.barChartRank3,
 div.barChartInfo[data-language-rank="3"] > div.infoRank,
 div.barChartInfo[data-project-rank="3"] > div.infoRank {
-	background-color: rgba(var(--greenLevelColor2), 1);
+    background-color: rgba(var(--greenLevelColor2), 1);
 }
 
 div.barChartRank4,
 div.barChartInfo[data-language-rank="4"] > div.infoRank,
 div.barChartInfo[data-project-rank="4"] > div.infoRank {
-	background-color: rgba(var(--greenLevelColor1), 1);
+    background-color: rgba(var(--greenLevelColor1), 1);
 }
 
 div.barChartRank5,
 div.barChartInfo[data-language-rank="5"] > div.infoRank,
 div.barChartInfo[data-project-rank="5"] > div.infoRank {
-	background-color: rgba(var(--greenLevelColor1), 0.75);
+    background-color: rgba(var(--greenLevelColor1), 0.75);
 }
 
 div.barChartRank6,
 div.barChartInfo[data-language-rank="6"] > div.infoRank,
 div.barChartInfo[data-project-rank="6"] > div.infoRank {
-	background-color: rgba(var(--greenLevelColor1), 0.5);
+    background-color: rgba(var(--greenLevelColor1), 0.5);
 }
 
 div.barChartInfo > span {
-	font-size: 16px;
+    font-size: 16px;
 }
 
 div.barChartInfo > span.infoValue {
-	margin: 0px 0px 0px auto;
+    margin: 0px 0px 0px auto;
 }
 
 #dialogBoxContainer {
@@ -605,50 +604,49 @@ div.menuDialogBox > div.footer {
 }
 
 #datePickerMenu {
+    animation: dropFadeOut var(--transitionDuration) ease;
     background-color: rgba(var(--menuBackgroundColor), 1);
+    border: solid 1px rgba(var(--borderColor), 1);
+    border-radius: 12px;
     display: flex;
     flex-direction: column;
-    border-radius: 12px;
-    width: fit-content;
     height: fit-content;
-    border: solid 1px rgba(var(--borderColor), 1);
-    z-index: 999;
-    visibility: hidden;
     opacity: 0;
-    animation: dropFadeOut var(--transitionDuration) ease;
+    visibility: hidden;
+    width: fit-content;
+    z-index: 999;
 }
 
 #datePickerMenu > div.header {
-    column-gap: 4px;
-    padding: 16px 16px 16px 16px;
-    display: flex;
-    width: 100%;
-    height: fit-content;
     align-items: center;
+    column-gap: 4px;
+    display: flex;
+    height: fit-content;
+    padding: 16px 16px 16px 16px;
+    width: 100%;
 }
 
 #datePickerMenu > div.header > span.month {
-    width: 64px;
-    height: 28px;
-    display: flex;
-    justify-content: center;
     align-items: center;
     border-radius: 6px;
-    font-size: 14px;
     color: rgba(var(--textColor1), 1);
+    display: flex;
+    font-size: 14px;
+    height: 28px;
+    justify-content: center;
+    width: 64px;
 }
 
 #datePickerMenu > div.header > input.yearInput {
-    width: 64px;
-    height: 28px;
-    border-radius: 6px;
-    font-size: 14px;
-    text-align: center;
-    color: rgba(var(--textColor1), 1);
     background-color: rgba(var(--greyBtnColor), 1);
     border: solid 1px rgba(var(--borderColor), 1);
+    border-radius: 6px;
+    color: rgba(var(--textColor1), 1);
+    font-size: 14px;
+    height: 28px;
     outline: none;
-    -moz-appearance: textfield;
+    text-align: center;
+    width: 64px;
 }
 
 #datePickerMenu > div.header > input.yearInput::-webkit-outer-spin-button,
@@ -661,19 +659,19 @@ div.menuDialogBox > div.footer {
 }
 
 #datePickerMenu > div.header > button {
+    align-items: center;
     background-color: rgba(var(--greyBtnColor), 1);
+    border: solid 1px rgba(var(--borderColor), 1);
+    border-radius: 6px;
+    color: rgba(var(--textColor1), 1);
     cursor: pointer;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    border: solid 1px rgba(var(--borderColor), 1);
-    color: rgba(var(--textColor1), 1);
     font-size: 12px;
-    padding: 0px 8px 0px 8px;
-    border-radius: 6px;
-    width: 40px;
     height: 28px;
+    justify-content: center;
+    padding: 0px 8px 0px 8px;
     transition: ease var(--transitionDuration);
+    width: 40px;
 }
 
 #datePickerMenu > div.header > button:hover {
@@ -690,26 +688,26 @@ div.menuDialogBox > div.footer {
 
 #datePickerMenu > div.body {
     height: fit-content;
-    width: 100%;
     padding: 16px;
+    width: 100%;
 }
 
 #datePickerMenu > div.body > div.weekdays {
-    height: fit-content;
-    width: 100%;
-    display: flex;
     align-items: center;
+    display: flex;
+    height: fit-content;
     justify-content: space-between;
+    width: 100%;
 }
 
 #datePickerMenu > div.body > div.weekdays > div {
-    font-size: 12px;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    justify-content: center;
     align-items: center;
     color: rgba(var(--textColor2), 1);
+    display: flex;
+    font-size: 12px;
+    height: 40px;
+    justify-content: center;
+    width: 40px;
 }
 
 #datePickerMenu > div.body > div.daysGrid {
@@ -719,16 +717,16 @@ div.menuDialogBox > div.footer {
 }
 
 #datePickerMenu > div.body > div.daysGrid > div {
-    cursor: pointer;
-    border-radius: 6px;
-    font-size: 12px;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    justify-content: center;
     align-items: center;
+    border-radius: 6px;
     color: rgba(var(--textColor1), 1);
+    cursor: pointer;
+    display: flex;
+    font-size: 12px;
+    height: 40px;
+    justify-content: center;
     transition: ease var(--transitionDuration);
+    width: 40px;
 }
 
 #datePickerMenu > div.body > div.daysGrid > div:hover {
@@ -740,18 +738,18 @@ div.menuDialogBox > div.footer {
 }
 
 #datePickerMenu > div.body > div.daysGrid > div.selectedWeek {
-    border-radius: 0px;
     background-color: rgba(var(--focusColor), 0.1);
+    border-radius: 0px;
 }
 
 #datePickerMenu > div.body > div.daysGrid > div.startOfWeek {
-    border-radius: 6px 0px 0px 6px;
     background-color: rgba(var(--focusColor), 1);
+    border-radius: 6px 0px 0px 6px;
 }
 
 #datePickerMenu > div.body > div.daysGrid > div.endOfWeek {
-    border-radius: 0px 6px 6px 0px;
     background-color: rgba(var(--focusColor), 1);
+    border-radius: 0px 6px 6px 0px;
 }
 
 #datePickerMenu > div.footer {
@@ -760,15 +758,15 @@ div.menuDialogBox > div.footer {
 }
 
 #datePickerMenu > div.footer > button {
-    border-radius: 6px;
-    height: 28px;
-    cursor: pointer;
-    width: fit-content;
-    font-size: 12px;
-    padding: 0px 8px 0px 8px;
     background-color: transparent;
+    border-radius: 6px;
     color: rgba(var(--textColor1), 1);
+    cursor: pointer;
+    font-size: 12px;
+    height: 28px;
+    padding: 0px 8px 0px 8px;
     transition: ease var(--transitionDuration);
+    width: fit-content;
 }
 
 #datePickerMenu > div.footer > button:hover {
@@ -834,16 +832,16 @@ div.menuDialogBox > div.footer {
 }
 
 #settingsMenu > div.body > div:nth-of-type(1) > div.themeSelectContainer > div.themeSelectInput > div.selectIndicator > div {
+    align-items: center;
     background-color: rgba(var(--greyBtnColor), 1);
     border: solid 1px rgba(var(--borderColor), 1);
     border-radius: 50%;
+    display: flex;
     height: 13px;
+    justify-content: center;
     position: relative;
     transition: ease var(--transitionDuration);
     width: 13px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 #settingsMenu > div.body > div:nth-of-type(1) > div.themeSelectContainer > div.themeSelectInput:hover > div.selectIndicator > div,
@@ -869,28 +867,33 @@ div.menuDialogBox > div.footer {
     line-height: 13px;
 }
 
-#settingsMenu > div.body > div:nth-of-type(2) {
-    display: flex;
+#settingsMenu > div.body > div:nth-of-type(2) > div.toggleSwitchSetting {
     align-items: center;
-    justify-content: space-between;
+    display: flex;
     height: fit-content;
+    justify-content: space-between;
+    margin: 16px 0px 0px 0px;
     width: 100%;
 }
 
-#settingsMenu > div.body > div:nth-of-type(2) > p {
+#settingsMenu > div.body > div:nth-of-type(2) > div.toggleSwitchSetting:first-of-type {
+    margin: 0px 0px 0px 0px;
+}
+
+#settingsMenu > div.body > div:nth-of-type(2) > div.toggleSwitchSetting > p {
     color: rgba(var(--textColor1), 1);
     font-size: 12px;
     line-height: 16px;
 }
 
 div.toggleSwitch {
-    position: relative;
-    border-radius: 6px;
     background-color: rgba(var(--greyBtnHoverColor), 1);
     border: solid 1px rgba(var(--borderColor), 1);
-    width: 48px;
+    border-radius: 6px;
     cursor: pointer;
     height: 24px;
+    position: relative;
+    width: 48px;
 }
 
 div.toggleSwitch.on {
@@ -904,39 +907,39 @@ div.toggleSwitch > div.sliderStatus {
 }
 
 div.toggleSwitch > div.sliderStatus > div {
-    height: 22px;
-    width: 26px;
-    display: flex;
-    justify-content: center;
     align-items: center;
+    display: flex;
+    height: 22px;
+    justify-content: center;
+    width: 26px;
 }
 
 div.toggleSwitch > div.sliderStatus > div > svg {
-    width: 12px;
-    height: 12px;
     fill: rgba(var(--textColor2), 1);
+    height: 12px;
+    width: 12px;
 }
 
 div.toggleSwitch.on > div.sliderStatus > div > svg {
-    fill: rgba(255, 255, 255, 1);
+    fill: rgba(var(--pureWhiteColor), 1);
 }
 
 div.toggleSwitch > div.slider {
-    position: absolute;
-    top: 50%;
-    left: 0;
-    transform: translateY(-50%);
-    height: 23px;
-    width: 22px;
-    border-radius: 5px;
     background-color: rgba(var(--headerBackgroundColor), 1);
     border: solid 1px rgba(var(--headerBtnHover), 1);
+    border-radius: 5px;
+    height: 23px;
+    left: 0;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
     transition: cubic-bezier(0.5, 1, 0.9, 1) var(--transitionDuration);
+    width: 22px;
 }
 
 div.toggleSwitch.on > div.slider {
-    left: calc(100% - 22px);
     border-color: rgba(var(--focusColor), 1);
+    left: calc(100% - 22px);
 }
 
 #accountMenu > div.body {
@@ -945,79 +948,180 @@ div.toggleSwitch.on > div.slider {
 
 #accountMenu > div.body > div:nth-of-type(1) {
     align-items: center;
-    justify-content: center;
-    row-gap: 16px;
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    row-gap: 16px;
 }
 
-#accountMenu > div.body > div:nth-of-type(1) > button:nth-of-type(1) {
+#accountMenu > div.body > div:nth-of-type(1) > button.importStatsBtn,
+#accountMenu > div.body > div:nth-of-type(1) > button.exportStatsBtn,
+#accountMenu > div.body > div:nth-of-type(1) > button.displayBackupsBtn {
+    align-items: center;
     background-color: rgba(var(--greyBtnColor), 1);
     border: solid 1px rgba(var(--borderColor), 1);
     border-radius: 6px;
-    cursor: pointer;
     color: rgba(var(--textColor1), 1);
-    min-width: fit-content;
-    width: 75%;
-    padding: 8px 16px 8px 16px;
+    cursor: pointer;
     display: flex;
-    justify-content: center;
-    align-items: center;
     font-size: 14px;
-    transition: ease var(--transitionDuration);
     height: 32px;
+    justify-content: center;
+    min-width: fit-content;
+    padding: 8px 16px 8px 16px;
+    transition: ease var(--transitionDuration);
+    width: 75%;
 }
 
-#accountMenu > div.body > div:nth-of-type(1) > button:nth-of-type(1):hover {
+#accountMenu > div.body > div:nth-of-type(1) > button.importStatsBtn:hover,
+#accountMenu > div.body > div:nth-of-type(1) > button.exportStatsBtn:hover,
+#accountMenu > div.body > div:nth-of-type(1) > button.displayBackupsBtn:hover {
     background-color: rgba(var(--greyBtnHoverColor), 1);
 }
 
-#accountMenu > div.body > div:nth-of-type(1) > button:nth-of-type(2) {
-    background-color: rgba(var(--greyBtnColor), 1);
-    border: solid 1px rgba(var(--borderColor), 1);
-    border-radius: 6px;
-    cursor: pointer;
-    color: rgba(var(--textColor1), 1);
-    min-width: fit-content;
-    width: 75%;
-    padding: 8px 16px 8px 16px;
-    display: flex;
-    justify-content: center;
+#accountMenu > div.body > div:nth-of-type(1) > button.resetStatsBtn {
     align-items: center;
-    font-size: 14px;
-    transition: ease var(--transitionDuration);
-    height: 32px;
-}
-
-#accountMenu > div.body > div:nth-of-type(1) > button:nth-of-type(2):hover {
-    background-color: rgba(var(--greyBtnHoverColor), 1);
-}
-
-#accountMenu > div.body > div:nth-of-type(1) > button:nth-of-type(3) {
     background-color: rgba(var(--redBtnColor), 0.1);
     border: solid 1px rgba(var(--redBtnColor), 1);
     border-radius: 6px;
     color: rgba(var(--redBtnColor), 1);
-    min-width: fit-content;
-    width: 75%;
     cursor: pointer;
-    padding: 8px 16px 8px 16px;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: ease var(--transitionDuration);
     font-size: 14px;
     height: 32px;
+    justify-content: center;
+    min-width: fit-content;
+    padding: 8px 16px 8px 16px;
+    transition: ease var(--transitionDuration);
+    width: 75%;
 }
 
-#accountMenu > div.body > div:nth-of-type(1) > button:nth-of-type(3):hover {
+#accountMenu > div.body > div:nth-of-type(1) > button.resetStatsBtn:hover {
     background-color: rgba(var(--redBtnColor), 1);
-    color: rgba(255, 255, 255, 1);
+    color: rgba(var(--pureWhiteColor), 1);
 }
 
 #accountMenu > div.body > div:nth-of-type(2) > p {
-    text-align: center;
     font-size: 12px;
+    text-align: center;
+}
+
+#backupsMenu > div.body {
+    align-items: center;
+    justify-content: center;
+}
+
+#backupsMenu > div.body > div:nth-of-type(1) {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    row-gap: 16px;
+    width: 100%;
+}
+
+#backupsMenu > div.body > div:nth-of-type(1) > div.emptyBackupFolder {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    row-gap: 16px;
+}
+
+#backupsMenu > div.body > div:nth-of-type(1) > div.emptyBackupFolder > svg {
+    fill: rgba(var(--textColor2), 1);
+    height: 32px;
+    width: 32px;
+}
+
+#backupsMenu > div.body > div:nth-of-type(1) > div.emptyBackupFolder > p {
+    color: rgba(var(--textColor2), 1);
+    font-size: 14px;
+}
+
+div.backupContainer {
+    align-items: center;
+    border: solid 1px rgba(var(--borderColor), 1);
+    border-radius: 6px;
+    column-gap: 16px;
+    display: flex;
+    height: fit-content;
+    justify-content: center;
+    padding: 16px;
+    transition: ease var(--transitionDuration);
+    width: 100%;
+}
+
+div.backupContainer:hover {
+    border: solid 1px rgba(var(--textColor1), 1);
+}
+
+div.backupContainer > svg {
+    fill: rgba(var(--textColor2), 1);
+    height: 24px;
+    width: 24px;
+}
+
+div.backupContainer > span.backupInfo {
+    color: rgba(var(--textColor1), 1);
+    display: flex;
+    font-size: 12px;
+    line-height: 24px;
+    margin-right: auto;
+}
+
+div.backupContainer > span.backupInfo > p {
+    font-size: 16px;
+    margin: 0px 4px 0px 4px;
+}
+
+div.backupContainer > span.backupInfo > p,
+div.backupContainer > span.backupInfo > span {
+    color: rgba(var(--textColor2), 1);
+}
+
+div.backupContainer > button.restoreBackupBtn {
+    align-items: center;
+    background-color: rgba(var(--greenBtnColor), 1);
+    border: solid 1px rgba(var(--borderColor), 1);
+    border-radius: 6px;
+    color: rgba(var(--textColor1), 1);
+    cursor: pointer;
+    display: flex;
+    font-family: NotoSans-SemiBold;
+    font-size: 12px;
+    height: 32px;
+    justify-content: center;
+    padding: 0px 12px 0px 12px;
+    text-wrap: nowrap;
+    transition: ease var(--transitionDuration);
+    width: fit-content;
+}
+
+div.backupContainer > button.restoreBackupBtn:hover {
+    background-color: rgba(var(--greenBtnHoverColor), 1);
+}
+
+#loader {
+    animation: loadingSpinner 1s cubic-bezier(0, 0, 1, 1) infinite;
+    fill: transparent;
+    height: 32px;
+    width: 32px;
+}
+
+#loader > circle {
+    cx: 8px;
+    cy: 8px;
+    r: 7px;
+    stroke: rgba(var(--textColor1), 1);
+    stroke-opacity: 0.25;
+    stroke-width: 2px;
+    vector-effect: non-scaling-stroke;
+}
+
+#loader > path {
+    stroke: rgba(var(--textColor1), 1);
+    stroke-linecap: round;
 }
 
 .visibleEl {
@@ -1044,13 +1148,13 @@ div.toggleSwitch.on > div.slider {
     }
 
     50% {
-        transform: translateY(15px);
         opacity: 1;
+        transform: translateY(15px);
     }
 
     100% {
-        transform: translateY(0);
         opacity: 1;
+        transform: translateY(0);
     }
 }
 
@@ -1064,8 +1168,8 @@ div.toggleSwitch.on > div.slider {
     }
 
     100% {
-        transform: translate(0px, 8px);
         opacity: 1;
+        transform: translate(0px, 8px);
     }
 }
 
@@ -1074,6 +1178,7 @@ div.toggleSwitch.on > div.slider {
         opacity: 0;
         transform: scale(0.5);
     }
+    
     100% {
         opacity: 1;
         transform: scale(1);
@@ -1084,6 +1189,7 @@ div.toggleSwitch.on > div.slider {
     0% {
         opacity: 0;
     }
+
     100% {
         opacity: 1;
     }
@@ -1093,6 +1199,7 @@ div.toggleSwitch.on > div.slider {
     0% {
         opacity: 1;
     }
+
     100% {
         opacity: 0;
     }
@@ -1103,6 +1210,7 @@ div.toggleSwitch.on > div.slider {
         opacity: 0;
         transform: translateY(-4px);
     }
+
     100% {
         opacity: 1;
         transform: translateY(0);
@@ -1114,19 +1222,26 @@ div.toggleSwitch.on > div.slider {
         opacity: 1;
         transform: translateY(0);
     }
+
     100% {
         opacity: 0;
         transform: translateY(-4px);
     }
 }
 
-@media (max-width: 975px) {
-	div.moduleWrapper {
-		flex-direction: column;
-		row-gap: 16px;
-	}
+@keyframes loadingSpinner {
+    100% {
+        transform: rotate(1turn);
+    }
+}
 
-	div.module {
-		width: 100%;
-	}
+@media (max-width: 975px) {
+    div.moduleWrapper {
+		flex-direction: column;
+        row-gap: 16px;
+    }
+
+    div.module {
+        width: 100%;
+    }
 }

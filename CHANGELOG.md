@@ -4,6 +4,27 @@ All notable changes to the "Statice" extension will be documented in this file.
 
 ## [Unreleased]
 
+## [2.3.0] - 2025-09-14
+
+### Added
+
+- Added the new backup menu and related features.
+- Added a new setting to enable or disable backups.
+- Implemented a temporary backup before each stats update, with automatic recovery in case of update failure.
+- Improved error handling during stats updates.
+
+## Changed
+
+- Major code optimization using the wco library.
+- Reformatted the code for better readability and performance.
+- Changed the theme transition animation.
+
+### Fixed
+
+- Fixed a display issue with module titles.
+- Fixed a display offset of the settings button icon on certain screens.
+- Changing settings in the VS Code menus now updates the state of the settings sliders in the app without needing to reload, and is now reflected when reopening the settings menu.
+
 ## [2.2.0] - 2025-05-22
 
 ### Fixed

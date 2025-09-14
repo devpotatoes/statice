@@ -37,64 +37,40 @@ exports.activate = activate;
 exports.deactivate = deactivate;
 const vscode = __importStar(require("vscode"));
 const fs = __importStar(require("fs"));
-const extensionVersion = "2.2.0";
+const zlib = __importStar(require("zlib"));
+const libsArray = [
+    {
+        name: "wco",
+        version: "1.0.0",
+        extension: "min.js",
+        path: "/libs",
+        defered: false
+    }
+];
+const extensionVersion = "2.3.0";
+const gitHubIssuesUrl = "https://github.com/devpotatoes/statice/issues";
+const getHelpActionBtnObj = {
+    label: "Get Help",
+    action: () => {
+        vscode.env.openExternal(vscode.Uri.parse(gitHubIssuesUrl));
+    }
+};
 let colorVariablesObj = {};
-async function checkUpdates(extensionPath) {
-    const statsFileData = fs.readFileSync(`${extensionPath}/src/data/stats.json`, "utf8") || fs.readFileSync(`${extensionPath}/data/stats.json`, "utf8");
-    const statsFileObj = JSON.parse(statsFileData);
-    statsFileObj.extensionVersion = statsFileObj.extensionVersion || "1.0.0";
-    if (statsFileObj.extensionVersion !== extensionVersion) {
-        const migrationsArray = [
-            {
-                version: "1.0.0",
-                migrateData: () => { }
-            },
-            {
-                version: "2.0.0",
-                migrateData: (statsFileObj) => {
-                    statsFileObj.extensionVersion = "2.0.0";
-                    delete statsFileObj.totalTime;
-                    statsFileObj.programmingLanguagesArray = statsFileObj.codeTypesList;
-                    delete statsFileObj.codeTypesList;
-                    statsFileObj.programmingLanguagesArray = statsFileObj.programmingLanguagesArray.map((fileTypeObj) => ({
-                        extension: fileTypeObj.type,
-                        time: fileTypeObj.time
-                    }));
-                    statsFileObj.projectsArray = statsFileObj.projectsList;
-                    delete statsFileObj.projectsList;
-                    statsFileObj.projectsArray = statsFileObj.projectsArray.map((projectObj) => ({
-                        name: projectObj.name,
-                        time: projectObj.time * 60
-                    }));
-                    statsFileObj.historyArray = statsFileObj.history;
-                    delete statsFileObj.history;
-                    statsFileObj.historyArray = statsFileObj.historyArray.map((dayObj) => ({
-                        date: dayObj.date,
-                        time: dayObj.time * 60
-                    }));
-                }
-            },
-            {
-                version: "2.1.0",
-                migrateData: () => {
-                    statsFileObj.extensionVersion = "2.1.0";
-                }
-            },
-            {
-                version: "2.2.0",
-                migrateData: () => {
-                    statsFileObj.extensionVersion = "2.2.0";
-                    fs.rmSync(`${extensionPath}/src/data/`, { recursive: true, force: true });
-                }
-            }
-        ];
-        const currentVersionIndex = migrationsArray.findIndex(migrationObj => migrationObj.version === statsFileObj.extensionVersion);
-        for (let i = currentVersionIndex + 1; i < migrationsArray.length; i += 1) {
-            const migrationObj = migrationsArray[i];
-            migrationObj.migrateData(statsFileObj);
-            fs.writeFileSync(`${extensionPath}/data/stats.json`, JSON.stringify(statsFileObj), "utf8");
-        }
-        ;
+async function newActionNotification(type, message, btns = []) {
+    const buttonLabelsArray = btns.map(btn => btn.label);
+    let action = undefined;
+    if (type === "info") {
+        action = await vscode.window.showInformationMessage(message, ...buttonLabelsArray);
+    }
+    else if (type === "warn") {
+        action = await vscode.window.showWarningMessage(message, ...buttonLabelsArray);
+    }
+    else if (type === "error") {
+        action = await vscode.window.showErrorMessage(message, ...buttonLabelsArray);
+    }
+    ;
+    if (action !== undefined) {
+        btns.find(btn => btn.label === action)?.action();
     }
     ;
 }
@@ -105,7 +81,7 @@ async function checkExtensionData(extensionPath) {
             fs.mkdirSync(`${extensionPath}/data`);
         }
         catch (error) {
-            vscode.window.showErrorMessage("An error have occurred when launching the extension.", "OK");
+            await newActionNotification("error", "An error have occurred when launching the Statice extension.", [getHelpActionBtnObj]);
         }
         ;
         const dataObj = {
@@ -118,14 +94,143 @@ async function checkExtensionData(extensionPath) {
             fs.writeFileSync(`${extensionPath}/data/stats.json`, JSON.stringify(dataObj), "utf8");
         }
         catch (error) {
-            vscode.window.showErrorMessage("An error have occurred when launching the extension.", "OK");
+            await newActionNotification("error", "An error have occurred when launching the Statice extension.", [getHelpActionBtnObj]);
         }
         ;
     }
     ;
 }
 ;
-async function newNotification(duration, message, forced = false) {
+async function checkUpdates(extensionPath) {
+    try {
+        let statsFileData = "";
+        if (fs.existsSync(`${extensionPath}/data/stats.json`) === true) {
+            statsFileData = fs.readFileSync(`${extensionPath}/data/stats.json`, "utf8");
+        }
+        else {
+            statsFileData = fs.readFileSync(`${extensionPath}/src/data/stats.json`, "utf8");
+        }
+        ;
+        const statsFileObj = JSON.parse(statsFileData);
+        statsFileObj.extensionVersion = statsFileObj.extensionVersion || "1.0.0";
+        const oldExtensionVersion = statsFileObj.extensionVersion;
+        if (statsFileObj.extensionVersion !== extensionVersion) {
+            const migrationsArray = [
+                {
+                    version: "1.0.0",
+                    migrateData: () => { }
+                },
+                {
+                    version: "2.0.0",
+                    migrateData: (statsFileObj) => {
+                        statsFileObj.extensionVersion = "2.0.0";
+                        delete statsFileObj.totalTime;
+                        statsFileObj.programmingLanguagesArray = statsFileObj.codeTypesList;
+                        delete statsFileObj.codeTypesList;
+                        statsFileObj.programmingLanguagesArray = statsFileObj.programmingLanguagesArray.map((fileTypeObj) => ({
+                            extension: fileTypeObj.type,
+                            time: fileTypeObj.time
+                        }));
+                        statsFileObj.projectsArray = statsFileObj.projectsList;
+                        delete statsFileObj.projectsList;
+                        statsFileObj.projectsArray = statsFileObj.projectsArray.map((projectObj) => ({
+                            name: projectObj.name,
+                            time: projectObj.time * 60
+                        }));
+                        statsFileObj.historyArray = statsFileObj.history;
+                        delete statsFileObj.history;
+                        statsFileObj.historyArray = statsFileObj.historyArray.map((dayObj) => ({
+                            date: dayObj.date,
+                            time: dayObj.time * 60
+                        }));
+                    }
+                },
+                {
+                    version: "2.1.0",
+                    migrateData: () => {
+                        statsFileObj.extensionVersion = "2.1.0";
+                    }
+                },
+                {
+                    version: "2.2.0",
+                    migrateData: () => {
+                        statsFileObj.extensionVersion = "2.2.0";
+                        fs.rmSync(`${extensionPath}/src/data/`, { recursive: true, force: true });
+                    }
+                },
+                {
+                    version: "2.3.0",
+                    migrateData: () => {
+                        statsFileObj.extensionVersion = "2.3.0";
+                        fs.mkdirSync(`${extensionPath}/data/temp`);
+                        fs.mkdirSync(`${extensionPath}/data/backups`);
+                    }
+                }
+            ];
+            const currentVersionIndex = migrationsArray.findIndex(migrationObj => migrationObj.version === statsFileObj.extensionVersion);
+            for (let i = currentVersionIndex + 1; i < migrationsArray.length; i += 1) {
+                const migrationObj = migrationsArray[i];
+                migrationObj.migrateData(statsFileObj);
+                fs.writeFileSync(`${extensionPath}/data/stats.json`, JSON.stringify(statsFileObj), "utf8");
+            }
+            ;
+            newActionNotification("info", `Statice has been updated from version ${oldExtensionVersion} to version ${extensionVersion} !`);
+        }
+        ;
+    }
+    catch (error) {
+        await newActionNotification("error", "An error have occurred while updating the Statice extension.", [getHelpActionBtnObj]);
+    }
+    ;
+}
+;
+async function createBackup(extensionPath) {
+    if (vscode.workspace.getConfiguration().get("statice.backups") === true) {
+        const currentDate = new Date();
+        const todayDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
+        const timestamp = todayDate.getTime();
+        try {
+            const statsFileData = fs.readFileSync(`${extensionPath}/data/stats.json`, "utf8");
+            JSON.parse(statsFileData);
+            const fileSize = fs.statSync(`${extensionPath}/data/stats.json`).size;
+            const backupData = zlib.gzipSync(Buffer.from(statsFileData, "utf8"));
+            const backupsFileNameArray = fs.readdirSync(`${extensionPath}/data/backups`);
+            backupsFileNameArray.forEach(fileName => {
+                if (fileName.split("_")[0] === timestamp.toString()) {
+                    fs.rmSync(`${extensionPath}/data/backups/${fileName}`);
+                }
+                ;
+            });
+            fs.writeFileSync(`${extensionPath}/data/backups/${timestamp}_${fileSize}.gz`, backupData);
+        }
+        catch (error) {
+            await newActionNotification("warning", "Statice failed to create a backup of your stats due to an unexpected issue.");
+        }
+        ;
+    }
+    ;
+}
+;
+async function manageBackups(extensionPath) {
+    if (vscode.workspace.getConfiguration().get("statice.backups") === true) {
+        try {
+            const backupsArray = fs.readdirSync(`${extensionPath}/data/backups`);
+            if (backupsArray.length > 7) {
+                const backupsTimestampsArray = backupsArray.map(fileName => Number(fileName.split("_")[0])).sort();
+                const oldestBackupFileName = backupsArray.find(fileName => Number(fileName.split("_")[0]) === backupsTimestampsArray[0]);
+                fs.rmSync(`${extensionPath}/data/backups/${oldestBackupFileName}`);
+            }
+            ;
+        }
+        catch (error) {
+            await newActionNotification("error", "Statice failed to manage your backups due to an unexpected issue.", [getHelpActionBtnObj]);
+        }
+        ;
+    }
+    ;
+}
+;
+async function newProgressNotification(duration, message, forced = false) {
     if (forced === true || vscode.workspace.getConfiguration().get("statice.notifications") === true) {
         await vscode.window.withProgress({
             location: vscode.ProgressLocation.Notification,
@@ -134,10 +239,16 @@ async function newNotification(duration, message, forced = false) {
             const steps = (duration / 1000) * 10;
             const stepDuration = duration / steps;
             const increment = 100 / steps;
-            progress.report({ increment: 0, message });
+            progress.report({
+                increment: 0,
+                message: message
+            });
             for (let i = 1; i <= steps; i += 1) {
                 await new Promise((resolve) => setTimeout(resolve, stepDuration));
-                progress.report({ increment, message });
+                progress.report({
+                    increment: increment,
+                    message: message
+                });
             }
             ;
         });
@@ -145,10 +256,12 @@ async function newNotification(duration, message, forced = false) {
     ;
 }
 ;
-function activate(context) {
+async function activate(context) {
     const extensionPath = context.extensionPath;
-    checkExtensionData(extensionPath);
-    checkUpdates(extensionPath);
+    await checkExtensionData(extensionPath);
+    await checkUpdates(extensionPath);
+    await createBackup(extensionPath);
+    await manageBackups(extensionPath);
     let sessionCodingTime = 0;
     const tempStatsArray = [];
     let statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
@@ -177,8 +290,22 @@ function activate(context) {
         const currentDate = new Date();
         const currentDateNumber = parseInt(`${currentDate.getFullYear()}${(currentDate.getMonth() + 1).toString().padStart(2, "0")}${currentDate.getDate().toString().padStart(2, "0")}`, 10);
         const workspaceFolderName = vscode.workspace.workspaceFolders?.[0].name;
-        const statsFileData = fs.readFileSync(`${extensionPath}/data/stats.json`, "utf8");
-        const statsFileObj = JSON.parse(statsFileData);
+        let statsFileObj = {};
+        try {
+            statsFileObj = JSON.parse(fs.readFileSync(`${extensionPath}/data/stats.json`, "utf8"));
+            const statsFileData = JSON.stringify(statsFileObj);
+            fs.writeFileSync(`${extensionPath}/data/temp/stats.json`, statsFileData, "utf8");
+        }
+        catch (error) {
+            try {
+                statsFileObj = JSON.parse(fs.readFileSync(`${extensionPath}/data/temp/stats.json`, "utf8"));
+            }
+            catch (error) {
+                await newProgressNotification(30000, "Statice could not read your stats file, and the temporary version is also unavailable or corrupted. Please restore a backup from your account, or contact support on GitHub if you need further assistance.", true);
+            }
+            ;
+        }
+        ;
         const dayHistoryIndex = statsFileObj.historyArray.findIndex((dayObj) => dayObj.date === currentDateNumber);
         if (dayHistoryIndex !== -1) {
             statsFileObj.historyArray[dayHistoryIndex].time += 60;
@@ -225,55 +352,72 @@ function activate(context) {
         catch (error) {
             statusBarItem.tooltip = "An error occurred while updating your stats.";
             statusBarItem.backgroundColor = new vscode.ThemeColor("statusBarItem.errorBackground");
-            newNotification(12500, `Statice failed to update your stats due to an unexpected issue.`, true);
+            newProgressNotification(12500, `Statice failed to update your stats due to an unexpected issue.`, true);
         }
         ;
         if (sessionCodingTime === 7200) {
-            newNotification(12500, "You've been coding for two hours. Time to grab a coffee !");
+            newProgressNotification(12500, "You've been coding for two hours. Time to grab a coffee !");
         }
         ;
         if (sessionCodingTime === 14400) {
-            newNotification(12500, "Four hours of coding ! The coffee is gone, but the bugs remain...");
+            newProgressNotification(12500, "Four hours of coding ! The coffee is gone, but the bugs remain...");
         }
         ;
         if (sessionCodingTime === 21600) {
-            newNotification(12500, "Six hours in... Have you considered that the bug might actually be a feature ?");
+            newProgressNotification(12500, "Six hours in... Have you considered that the bug might actually be a feature ?");
         }
         ;
         if (sessionCodingTime === 28800) {
-            newNotification(12500, "Height hours... Maybe it's time to check if the sun still exists...");
+            newProgressNotification(12500, "Height hours... Maybe it's time to check if the sun still exists...");
         }
         ;
         if (sessionCodingTime === 36000) {
-            newNotification(12500, "Ten hours in... Even infinite loops would have stopped by now.");
+            newProgressNotification(12500, "Ten hours in... Even infinite loops would have stopped by now.");
         }
         ;
         if (sessionCodingTime === 43200) {
-            newNotification(12500, "Twelve hours straight !!! You've unlocked the \"Sleep is for the weak\" achievement !");
+            newProgressNotification(12500, "Twelve hours straight !!! You've unlocked the \"Sleep is for the weak\" achievement !");
         }
         ;
         if (sessionCodingTime === 86400) {
-            newNotification(12500, "24 hours really ??? Your keyboard survived, but can you say the same about your sanity... Sleep, hydrate, and try again later ! (CTRL + S > ALT + F4)");
+            newProgressNotification(12500, "24 hours really ??? Your keyboard survived, but can you say the same about your sanity... Sleep, hydrate, and try again later ! (CTRL + S > ALT + F4)");
         }
         ;
     }, 60000);
     let dashboardPanelObj = undefined;
-    context.subscriptions.push(vscode.commands.registerCommand("staticeOpenDashboard", () => {
+    context.subscriptions.push(vscode.commands.registerCommand("staticeOpenDashboard", async () => {
         if (dashboardPanelObj === undefined) {
             dashboardPanelObj = vscode.window.createWebviewPanel("staticeDashboardWebView", "Dashboard", vscode.ViewColumn.One, {
                 enableScripts: true,
                 localResourceRoots: [
+                    vscode.Uri.file(`${extensionPath}/libs`),
                     vscode.Uri.file(`${extensionPath}/src/assets`),
                     vscode.Uri.file(`${extensionPath}/src/css`),
-                    vscode.Uri.file(`${extensionPath}/src/js`)
+                    vscode.Uri.file(`${extensionPath}/src/js`),
+                    vscode.Uri.file(`${extensionPath}/src/wco`),
+                    vscode.Uri.file(`${extensionPath}/src/wco/schemas`)
                 ],
                 retainContextWhenHidden: true
             });
-            let htmlFileData = fs.readFileSync(`${extensionPath}/src/pages/index.html`, "utf8");
-            htmlFileData = htmlFileData.replace(/href="\.\.\/css\/style\.css"/, `href="${dashboardPanelObj.webview.asWebviewUri(vscode.Uri.file(`${extensionPath}/src/css/style.css`))}"`);
-            htmlFileData = htmlFileData.replace(/src="\.\.\/js\/main\.js"/, `src="${dashboardPanelObj.webview.asWebviewUri(vscode.Uri.file(`${extensionPath}/src/js/main.js`))}"`);
-            htmlFileData = htmlFileData.replace(/data-current-theme="[^"]*"/, `data-current-theme="${vscode.workspace.getConfiguration().get("statice.theme")?.toLowerCase()}"`);
-            dashboardPanelObj.webview.html = htmlFileData;
+            try {
+                let htmlFileData = fs.readFileSync(`${extensionPath}/src/pages/index.html`, "utf8");
+                htmlFileData = htmlFileData.replace(/href="\/src\/css\/style\.css"/, `href="${dashboardPanelObj.webview.asWebviewUri(vscode.Uri.file(`${extensionPath}/src/css/style.css`))}"`);
+                function loadLib(lib) {
+                    const scriptTag = `<script src="${dashboardPanelObj?.webview.asWebviewUri(vscode.Uri.file(`${extensionPath}${lib.path}/${lib.name}-${lib.version}.${lib.extension}`))}" ${lib.defered ? "defer" : ""}></script>`;
+                    htmlFileData = htmlFileData.replace(/<libs>(.*?)<\/libs>/gs, `<libs>$1\n${scriptTag}</libs>`);
+                }
+                ;
+                libsArray.forEach(libObj => {
+                    loadLib(libObj);
+                });
+                htmlFileData = htmlFileData.replace(/src="\/src\/js\/main\.js"/, `src="${dashboardPanelObj.webview.asWebviewUri(vscode.Uri.file(`${extensionPath}/src/js/main.js`))}"`);
+                htmlFileData = htmlFileData.replace(/data-current-theme="[^"]*"/, `data-current-theme="${vscode.workspace.getConfiguration().get("statice.theme")?.toLowerCase()}"`);
+                dashboardPanelObj.webview.html = htmlFileData;
+            }
+            catch (error) {
+                await newActionNotification("error", "An error occurred while loading the Statice ressources.", [getHelpActionBtnObj]);
+            }
+            ;
             dashboardPanelObj.onDidDispose(() => {
                 dashboardPanelObj = undefined;
             }, null, context.subscriptions);
@@ -283,6 +427,15 @@ function activate(context) {
         }
         ;
         dashboardPanelObj.webview.onDidReceiveMessage(async (messageObj) => {
+            if (messageObj.id === "getAllSettings") {
+                await dashboardPanelObj?.webview.postMessage({
+                    id: "getAllSettings",
+                    data: {
+                        settingsObj: vscode.workspace.getConfiguration("statice")
+                    }
+                });
+            }
+            ;
             if (messageObj.id === "getSetting") {
                 await dashboardPanelObj?.webview.postMessage({
                     id: "getSetting",
@@ -308,9 +461,52 @@ function activate(context) {
                 colorVariablesObj = messageObj.data.colorVariablesObj;
             }
             ;
+            if (messageObj.id === "genWcoUrls") {
+                try {
+                    const wcoPath = `${extensionPath}${messageObj.data.wcoPath}`;
+                    const schemasPath = `${extensionPath}${messageObj.data.schemasPath}`;
+                    const wcoArray = fs.readdirSync(wcoPath).filter(fileName => fileName.endsWith(".wco"));
+                    const schemasArray = fs.readdirSync(schemasPath).filter(fileName => fileName.endsWith(".json"));
+                    let urlsObj = {
+                        wco: {},
+                        schemas: {}
+                    };
+                    wcoArray.forEach(wcoFileName => {
+                        const wcoName = wcoFileName.split(".")[0];
+                        urlsObj.wco[wcoName] = dashboardPanelObj?.webview.asWebviewUri(vscode.Uri.file(`${wcoPath}/${wcoName}.wco`)).toString() || "";
+                    });
+                    schemasArray.forEach(schemaFileName => {
+                        const schemaName = schemaFileName.split(".")[0];
+                        urlsObj.schemas[schemaName] = dashboardPanelObj?.webview.asWebviewUri(vscode.Uri.file(`${schemasPath}/${schemaName}.json`)).toString() || "";
+                    });
+                    await dashboardPanelObj?.webview.postMessage({
+                        id: "genWcoUrls",
+                        data: urlsObj
+                    });
+                }
+                catch (error) {
+                    await newActionNotification("error", "An error occurred while loading the Statice ressources.", [getHelpActionBtnObj]);
+                }
+                ;
+            }
+            ;
             if (messageObj.id === "fetchStatsData") {
-                const statsFileData = fs.readFileSync(`${extensionPath}/data/stats.json`, "utf8");
-                const statsFileObj = JSON.parse(statsFileData);
+                let statsFileObj = {};
+                try {
+                    statsFileObj = JSON.parse(fs.readFileSync(`${extensionPath}/data/stats.json`, "utf8"));
+                    const statsFileData = JSON.stringify(statsFileObj);
+                    fs.writeFileSync(`${extensionPath}/data/temp/stats.json`, statsFileData, "utf8");
+                }
+                catch (error) {
+                    try {
+                        statsFileObj = JSON.parse(fs.readFileSync(`${extensionPath}/data/temp/stats.json`, "utf8"));
+                    }
+                    catch (error) {
+                        await newProgressNotification(30000, "Statice could not read your stats file, and the temporary version is also unavailable or corrupted. Please restore a backup from your account, or contact support on GitHub if you need further assistance.", true);
+                    }
+                    ;
+                }
+                ;
                 const date = new Date(messageObj.data.date);
                 let dateNumber = parseInt(`${date.getFullYear()}${(date.getMonth() + 1).toString().padStart(2, "0")}${date.getDate().toString().padStart(2, "0")}`, 10);
                 let responseDataObj = {
@@ -626,7 +822,7 @@ function activate(context) {
                             id: "importStatsStatus",
                             data: {
                                 type: "info",
-                                text: "Stats data has been successfully imported."
+                                message: "Stats data has been successfully imported."
                             }
                         });
                     }
@@ -635,7 +831,7 @@ function activate(context) {
                             id: "importStatsStatus",
                             data: {
                                 type: "error",
-                                text: "An error has occurred while importing the data."
+                                message: "An error has occurred while importing the data."
                             }
                         });
                     }
@@ -646,7 +842,7 @@ function activate(context) {
                         id: "importStatsStatus",
                         data: {
                             type: "error",
-                            text: "No stats file selected, stats importing has been cancelled."
+                            message: "No stats file selected, stats importing has been cancelled."
                         }
                     });
                 }
@@ -670,7 +866,7 @@ function activate(context) {
                             id: "exportStatsStatus",
                             data: {
                                 type: "info",
-                                text: "Stats data has been successfully exported."
+                                message: "Stats data has been successfully exported."
                             }
                         });
                     }
@@ -679,7 +875,7 @@ function activate(context) {
                             id: "exportStatsStatus",
                             data: {
                                 type: "error",
-                                text: "An error has occurred while exporting the data."
+                                message: "An error has occurred while exporting the data."
                             }
                         });
                     }
@@ -690,7 +886,74 @@ function activate(context) {
                         id: "exportStatsStatus",
                         data: {
                             type: "error",
-                            text: "No file was selected. Stats export has been cancelled."
+                            message: "No file was selected, stats export has been cancelled."
+                        }
+                    });
+                }
+                ;
+            }
+            ;
+            if (messageObj.id === "fetchBackups") {
+                try {
+                    const backupsFileNameArray = fs.readdirSync(`${extensionPath}/data/backups`).sort((x, y) => Number(y.split("_")[0]) - Number(x.split("_")[0]));
+                    const backupsArray = [];
+                    backupsFileNameArray.forEach(fileName => {
+                        const [timestamp, fileSize] = fileName.split(".")[0].split("_");
+                        backupsArray.push({
+                            timestamp: timestamp,
+                            sizeb: fileSize
+                        });
+                    });
+                    await dashboardPanelObj?.webview.postMessage({
+                        id: "fetchBackups",
+                        data: {
+                            backupsArray: backupsArray
+                        }
+                    });
+                }
+                catch (error) {
+                    await dashboardPanelObj?.webview.postMessage({
+                        id: "fetchBackups",
+                        data: {
+                            backupsArray: []
+                        }
+                    });
+                }
+                ;
+            }
+            ;
+            if (messageObj.id === "restoreBackup") {
+                try {
+                    const confirmationDaliog = await vscode.window.showWarningMessage("Are you sure you want to restore this backup ? This action will permanently replace your current statistics with those from the selected backup.", { modal: true }, "Yes", "No");
+                    if (confirmationDaliog === "Yes") {
+                        const buffer = fs.readFileSync(`${extensionPath}/data/backups/${messageObj.data.backupName}`);
+                        const unzippedFileData = zlib.gunzipSync(buffer).toString();
+                        fs.writeFileSync(`${extensionPath}/data/stats.json`, unzippedFileData, "utf8");
+                        await dashboardPanelObj?.webview.postMessage({
+                            id: "restoreBackupStatus",
+                            data: {
+                                type: "info",
+                                message: "Backup has been successfully restored."
+                            }
+                        });
+                    }
+                    else {
+                        await dashboardPanelObj?.webview.postMessage({
+                            id: "restoreBackupStatus",
+                            data: {
+                                type: "error",
+                                message: "Backup restoration has been cancelled."
+                            }
+                        });
+                    }
+                    ;
+                }
+                catch (error) {
+                    await dashboardPanelObj?.webview.postMessage({
+                        id: "restoreBackupStatus",
+                        data: {
+                            type: "error",
+                            message: "Backup restoration failed due to an unexpected error."
                         }
                     });
                 }
@@ -712,7 +975,7 @@ function activate(context) {
                             id: "resetStatsStatus",
                             data: {
                                 type: "info",
-                                text: "Stats data has been successfully reset."
+                                message: "Stats data has been successfully reset."
                             }
                         });
                     }
@@ -721,7 +984,7 @@ function activate(context) {
                             id: "resetStatsStatus",
                             data: {
                                 type: "error",
-                                text: "Stats reset has been cancelled."
+                                message: "Stats reset has been cancelled."
                             }
                         });
                     }
@@ -732,7 +995,7 @@ function activate(context) {
                         id: "resetStatsStatus",
                         data: {
                             type: "error",
-                            text: "An error have occurred when resetting the data."
+                            message: "An error have occurred when resetting the data."
                         }
                     });
                 }

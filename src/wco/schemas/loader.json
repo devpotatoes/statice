@@ -1,0 +1,10 @@
+{
+    "message": {
+        "meta": {
+            "ref": "../loader.wco",
+            "description": "Waiting message."
+        },
+        "required": false,
+        "type": "str"
+    }
+}

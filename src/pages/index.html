@@ -3,9 +3,10 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src https://*.vscode-resource.vscode-cdn.net; font-src https://*.vscode-resource.vscode-cdn.net; script-src https://*.vscode-resource.vscode-cdn.net https://cdn.jsdelivr.net/npm/chart.js;">
-	<link rel="stylesheet" href="../css/style.css">
-	<script src="../js/main.js" defer></script>
+	<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src https://*.vscode-resource.vscode-cdn.net; font-src https://*.vscode-resource.vscode-cdn.net; script-src https://*.vscode-resource.vscode-cdn.net https://cdn.jsdelivr.net/npm/chart.js; connect-src https://*.vscode-resource.vscode-cdn.net;">
+	<link rel="stylesheet" href="/src/css/style.css">
+	<libs></libs>
+	<script src="/src/js/main.js" defer></script>
 	<script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
 	<title>Statice</title>
 </head>
@@ -290,21 +291,41 @@
 				</div>
 				<hr>
 				<div>
-					<p>Enable notifications</p>
-					<div id="enableNotificationsSettingToggleSwitch" class="toggleSwitch">
-						<div class="sliderStatus">
-							<div>
-								<svg viewBox="0 0 16 16" width="16" height="16">
-									<path d="M8 2a.75.75 0 0 1 .75.75v11.5a.75.75 0 0 1-1.5 0V2.75A.75.75 0 0 1 8 2Z"></path>
-								</svg>
+					<div class="toggleSwitchSetting">
+						<p>Enable notifications</p>
+						<div id="enableNotificationsSettingToggleSwitch" class="toggleSwitch">
+							<div class="sliderStatus">
+								<div>
+									<svg viewBox="0 0 16 16" width="16" height="16">
+										<path d="M8 2a.75.75 0 0 1 .75.75v11.5a.75.75 0 0 1-1.5 0V2.75A.75.75 0 0 1 8 2Z"></path>
+									</svg>
+								</div>
+								<div>
+									<svg viewBox="0 0 16 16" width="16" height="16">
+										<path fill-rule="evenodd" d="M8 12.5a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12Z"></path>
+									</svg>
+								</div>
 							</div>
-							<div>
-								<svg viewBox="0 0 16 16" width="16" height="16">
-									<path fill-rule="evenodd" d="M8 12.5a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12Z"></path>
-								</svg>
-							</div>
+							<div class="slider"></div>
 						</div>
-						<div class="slider"></div>
+					</div>
+					<div class="toggleSwitchSetting">
+						<p>Enable backups (recommended)</p>
+						<div id="enableBackupsSettingToggleSwitch" class="toggleSwitch">
+							<div class="sliderStatus">
+								<div>
+									<svg viewBox="0 0 16 16" width="16" height="16">
+										<path d="M8 2a.75.75 0 0 1 .75.75v11.5a.75.75 0 0 1-1.5 0V2.75A.75.75 0 0 1 8 2Z"></path>
+									</svg>
+								</div>
+								<div>
+									<svg viewBox="0 0 16 16" width="16" height="16">
+										<path fill-rule="evenodd" d="M8 12.5a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12Z"></path>
+									</svg>
+								</div>
+							</div>
+							<div class="slider"></div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -322,11 +343,25 @@
 				<div>
 					<button class="importStatsBtn">Import stats</button>
 					<button class="exportStatsBtn">Export stats</button>
+					<button class="displayBackupsBtn">Restore backup</button>
 					<button class="resetStatsBtn">Reset stats</button>
 				</div>
 				<div>
-					<p>v2.2.0</p>
+					<p>v2.3.0</p>
 				</div>
+			</div>
+		</div>
+		<div id="backupsMenu" class="menuDialogBox">
+			<div class="header">
+				<p>Backups</p>
+				<button class="closeMenuBtn">
+					<svg viewBox="0 0 16 16" width="16" height="16">
+						<path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path>
+					</svg>
+				</button>
+			</div>
+			<div class="body">
+				<div></div>
 			</div>
 		</div>
 	</div>

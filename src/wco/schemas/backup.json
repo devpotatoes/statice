@@ -1,0 +1,33 @@
+{
+    "date": {
+        "meta": {
+            "description": "Backup date."
+        },
+        "required": true,
+        "type": "str",
+        "default": "1970-01-01 00:00"
+    },
+    "size": {
+        "meta": {
+            "description": "Backup size."
+        },
+        "required": true,
+        "type": "float32",
+        "default": 0.0
+    },
+    "unit": {
+        "meta": {
+            "description": "Size unit."
+        },
+        "required": true,
+        "type": "str",
+        "default": "KB",
+        "enum": [
+            "B",
+            "KB",
+            "MB",
+            "GB",
+            "TB"
+        ]
+    }
+}

@@ -1,0 +1,11 @@
+{
+    "message": {
+        "meta": {
+            "ref": "../infoAlert.wco",
+            "description": "Info message."
+        },
+        "required": true,
+        "type": "str",
+        "default": "Info"
+    }
+}

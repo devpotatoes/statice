@@ -1,0 +1,11 @@
+{
+    "message": {
+        "meta": {
+            "ref": "../errorAlert.wco",
+            "description": "Error message."
+        },
+        "required": true,
+        "type": "str",
+        "default": "Error"
+    }
+}

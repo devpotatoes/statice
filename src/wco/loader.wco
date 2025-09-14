@@ -1,0 +1,5 @@
+<svg id="loader" viewBox="0 0 16 16" width="32px" height="32px">
+    <circle></circle>
+    <path d="M15 8a7.002 7.002 0 00-7-7"></path>
+</svg>
+<span>${message}</span>

@@ -2,6 +2,8 @@ const vscode = acquireVsCodeApi();
 
 let extensionSettingsObj = {};
 
+let wcoConfig = {};
+
 const bodyEl = document.querySelector("body");
 const appSplashSreenEl = bodyEl.querySelector("#appSplashSreen");
 const reloadBtnEl = bodyEl.querySelector("button.reloadBtn");
@@ -21,11 +23,15 @@ const themeSelectInputElArray = settingsMenuEl.querySelectorAll("div.body > div:
 const closeMenuBtnElArray = dialogBoxContainerEl.querySelectorAll("div.header > button.closeMenuBtn");
 const toggleSwitchElArray = bodyEl.querySelectorAll("div.toggleSwitch");
 const enableNotificationsSettingToggleSwitchEl = settingsMenuEl.querySelector("#enableNotificationsSettingToggleSwitch");
+const enableBackupsSettingToggleSwitchEl = settingsMenuEl.querySelector("#enableBackupsSettingToggleSwitch");
 const accountBtnEl = bodyEl.querySelector("button.accountBtn");
 const accountMenuEl = dialogBoxContainerEl.querySelector("#accountMenu");
 const importStatsBtnEl = accountMenuEl.querySelector("button.importStatsBtn");
 const exportStatsBtnEl = accountMenuEl.querySelector("button.exportStatsBtn");
+const displayBackupsBtnEl = accountMenuEl.querySelector("button.displayBackupsBtn");
 const resetStatsBtnEl = accountMenuEl.querySelector("button.resetStatsBtn");
+const backupsMenuEl = dialogBoxContainerEl.querySelector("#backupsMenu");
+const emptyBackupFolderEl = backupsMenuEl.querySelector("div.body > div:nth-of-type(1) > div.emptyBackupFolder");
 const totalTimeModuleTextEl = bodyEl.querySelector("div.totalTimeModule > div > span");
 const todayTimeModuleTextEl = bodyEl.querySelector("div.todayTimeModule > div > span");
 const todayTimeModuleChartTextEl = bodyEl.querySelector("div.todayTimeModule > div.moduleInfoWrapper > div.progressChart > span");
@@ -55,31 +61,20 @@ let openMenuName = "";
 let datePickerDate = new Date();
 let selectedDate = new Date();
 
-function newAlert(type, containerEl, text) {
-    const alertIsAlreadyDisplayed = Array.from(containerEl.querySelectorAll(`${type}-alert > p`)).some(p => p.innerText === text);
+async function newAlert(type, containerEl, message) {
+    const alertIsAlreadyDisplayed = Array.from(containerEl.querySelectorAll(`${type}-alert > p`)).some(p => p.innerText === message);
 
     if (alertIsAlreadyDisplayed === false) {
-        if (type === "error" || type === "warning") {
-            containerEl.insertAdjacentHTML("afterbegin", `
-                <${type}-alert>
-                    <svg viewBox="0 0 16 16" width="16" height="16">
-                        <path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0 1 14.082 15H1.918a1.75 1.75 0 0 1-1.543-2.575Zm1.763.707a.25.25 0 0 0-.44 0L1.698 13.132a.25.25 0 0 0 .22.368h12.164a.25.25 0 0 0 .22-.368Zm.53 3.996v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path>
-                    </svg>
-                    <p>${text}</p>
-                </${type}-alert>`
-            );
-        } else if (type === "info") {
-            containerEl.insertAdjacentHTML("afterbegin", `
-                <info-alert>
-                    <svg viewBox="0 0 16 16" width="16" height="16">
-                        <path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path>
-                    </svg>
-                    <p>${text}</p>
-                </info-alert>`
-            );
+        const alertDataObj = {
+            message: message
         };
+        
+        const alertComponent = await wco.render(wcoConfig.urls.wco[`${type}Alert`], wcoConfig.urls.schemas[`${type}Alert`], alertDataObj);
+
+        containerEl.insertAdjacentHTML("afterbegin", alertComponent);
+
         setTimeout(() => {
-            Array.from(containerEl.querySelectorAll(`${type}-alert > p`)).find(p => p.innerText === text).parentElement.remove();
+            Array.from(containerEl.querySelectorAll(`${type}-alert > p`)).find(p => p.innerText === message).parentElement.remove();
         }, 15000);
     };
 };
@@ -171,12 +166,14 @@ function renderCalendar(date) {
         newDayCellEl.addEventListener("click", () => {
             selectedDate = currentDate;
 
-            vscode.postMessage({
-                id: "fetchStatsData",
-                data: {
-                    date: selectedDate
+            vscode.postMessage(
+                {
+                    id: "fetchStatsData",
+                    data: {
+                        date: selectedDate
+                    }
                 }
-            });
+            );
 
             renderCalendar(date);
 
@@ -188,36 +185,51 @@ function renderCalendar(date) {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
-    vscode.postMessage({
-        id: "getSetting",
-        data: {
-            settingName: "theme"
+    vscode.postMessage(
+        {
+            id: "getAllSettings"
         }
-    });
+    );
 
-    vscode.postMessage({
-        id: "getSetting",
-        data: {
-            settingName: "notifications"
+    wco.setConfig(
+        {
+            schemasPath: "/src/wco/schemas",
+            wcoPath: "/src/wco"
         }
-    });
+    );
 
-    vscode.postMessage({
-        id: "loadColorVariables",
-        data: {
-            colorVariablesObj: colorsVariablesArray.reduce((acc, name) => {
-                acc[name] = getComputedStyle(document.documentElement).getPropertyValue(name);
-                return acc;
-            }, {})
-        }
-    });
+    wcoConfig = wco.getConfig();
 
-    vscode.postMessage({
-        id: "fetchStatsData",
-        data: {
-            date: selectedDate
+    vscode.postMessage(
+        {
+            id: "genWcoUrls",
+            data: {
+                schemasPath: wcoConfig.schemasPath,
+                wcoPath: wcoConfig.wcoPath
+            }
         }
-    });
+    );
+
+    vscode.postMessage(
+        {
+            id: "loadColorVariables",
+            data: {
+                colorVariablesObj: colorsVariablesArray.reduce((acc, name) => {
+                    acc[name] = getComputedStyle(document.documentElement).getPropertyValue(name);
+                    return acc;
+                }, {})
+            }
+        }
+    );
+
+    vscode.postMessage(
+        {
+            id: "fetchStatsData",
+            data: {
+                date: selectedDate
+            }
+        }
+    );
 
     setTimeout(() => {
         appSplashSreenEl.style.display = "none";
@@ -226,13 +238,28 @@ document.addEventListener("DOMContentLoaded", () => {
     window.addEventListener("resize", resizeCanvas);
 });
 
+document.addEventListener("click", (event) => {
+    if (event.target.matches("button.restoreBackupBtn")) {
+        vscode.postMessage(
+            {
+                id: "restoreBackup",
+                data: {
+                    backupName: event.target.parentElement.getAttribute("data-backup-file-name")
+                }
+            }
+        );
+    };
+});
+
 reloadBtnEl.addEventListener("click", () => {
-    vscode.postMessage({
-        id: "fetchStatsData",
-        data: {
-            date: selectedDate
+    vscode.postMessage(
+        {
+            id: "fetchStatsData",
+            data: {
+                date: selectedDate
+            }
         }
-    });
+    );
 });
 
 dateBtnEl.addEventListener("click", () => {
@@ -266,12 +293,14 @@ thisWeekBtnEl.addEventListener("click", () => {
     datePickerDate = new Date();
     selectedDate = new Date();
 
-    vscode.postMessage({
-        id: "fetchStatsData",
-        data: {
-            date: selectedDate
+    vscode.postMessage(
+        {
+            id: "fetchStatsData",
+            data: {
+                date: selectedDate
+            }
         }
-    });
+    );
 
     renderCalendar(datePickerDate);
 
@@ -281,14 +310,32 @@ thisWeekBtnEl.addEventListener("click", () => {
 });
 
 settingsBtnEl.addEventListener("click", () => {
-    themeSelectInputElArray.forEach(input => {
-        input.setAttribute("data-current-theme", "false");
-    });
-    bodyEl.querySelector(`[data-theme="${extensionSettingsObj.theme.toLowerCase()}"]`).setAttribute("data-current-theme", "true");
+    vscode.postMessage(
+        {
+            id: "getAllSettings"
+        }
+    );
 
-    if (extensionSettingsObj.notifications === true) {
-        enableNotificationsSettingToggleSwitchEl.classList.add("on");
-    };
+    
+    setTimeout(() => {
+        themeSelectInputElArray.forEach(input => {
+            input.setAttribute("data-current-theme", "false");
+        });
+
+        bodyEl.querySelector(`[data-theme="${extensionSettingsObj.theme.toLowerCase()}"]`).setAttribute("data-current-theme", "true");
+
+        if (extensionSettingsObj.notifications === true) {
+            enableNotificationsSettingToggleSwitchEl.classList.add("on");
+        } else {
+            enableNotificationsSettingToggleSwitchEl.classList.remove("on");
+        };
+    
+        if (extensionSettingsObj.backups === true) {
+            enableBackupsSettingToggleSwitchEl.classList.add("on");
+        } else {
+            enableBackupsSettingToggleSwitchEl.classList.remove("on");
+        };
+    }, 500);
 
     dialogBoxContainerEl.classList.toggle("visibleEl");
     settingsMenuEl.classList.toggle("visibleElAnimScale");
@@ -305,30 +352,42 @@ closeMenuBtnElArray.forEach(btn => {
 themeSelectInputElArray.forEach(input => {
     input.addEventListener("click", () => {
         const selectedTheme = input.getAttribute("data-theme");
+
         themeSelectInputElArray.forEach(input => {
             input.setAttribute("data-current-theme", "false");
         });
 
         if (selectedTheme === "light") {
-            vscode.postMessage({
-                id: "setSetting",
-                data: {
-                    settingName: "theme",
-                    settingValue: "Light"
+            vscode.postMessage(
+                {
+                    id: "setSetting",
+                    data: {
+                        settingName: "theme",
+                        settingValue: "Light"
+                    }
                 }
-            });
+            );
         } else if (selectedTheme === "dark") {
-            vscode.postMessage({
-                id: "setSetting",
-                data: {
-                    settingName: "theme",
-                    settingValue: "Dark"
+            vscode.postMessage(
+                {
+                    id: "setSetting",
+                    data: {
+                        settingName: "theme",
+                        settingValue: "Dark"
+                    }
                 }
-            });
+            );
         };
         
         bodyEl.setAttribute("data-current-theme", selectedTheme);
         input.setAttribute("data-current-theme", "true");
+
+        appSplashSreenEl.style.display = "flex";
+        settingsMenuEl.querySelector("button.closeMenuBtn").click();
+
+        setTimeout(() => {
+            appSplashSreenEl.style.display = "none";
+        }, 2500);
     });
 });
 
@@ -340,17 +399,38 @@ toggleSwitchElArray.forEach(toggleSwitch => {
 
 enableNotificationsSettingToggleSwitchEl.addEventListener("click", () => {
     let settingStatus = false;
+
     if (enableNotificationsSettingToggleSwitchEl.classList.contains("on") === true) {
         settingStatus = true;
     };
 
-    vscode.postMessage({
-        id: "setSetting",
-        data: {
-            settingName: "notifications",
-            settingValue: settingStatus
+    vscode.postMessage(
+        {
+            id: "setSetting",
+            data: {
+                settingName: "notifications",
+                settingValue: settingStatus
+            }
         }
-    });
+    );
+});
+
+enableBackupsSettingToggleSwitchEl.addEventListener("click", () => {
+    let settingStatus = false;
+
+    if (enableBackupsSettingToggleSwitchEl.classList.contains("on") === true) {
+        settingStatus = true;
+    };
+
+    vscode.postMessage(
+        {
+            id: "setSetting",
+            data: {
+                settingName: "backups",
+                settingValue: settingStatus
+            }
+        }
+    );
 });
 
 accountBtnEl.addEventListener("click", () => {
@@ -360,22 +440,58 @@ accountBtnEl.addEventListener("click", () => {
 });
 
 importStatsBtnEl.addEventListener("click", () => {
-    vscode.postMessage({ id: "importStats" });
+    vscode.postMessage(
+        {
+            id: "importStats"
+        }
+    );
 });
 
 exportStatsBtnEl.addEventListener("click", () => {
-    vscode.postMessage({ id: "exportStats" });
+    vscode.postMessage(
+        {
+            id: "exportStats"
+        }
+    );
+});
+
+displayBackupsBtnEl.addEventListener("click", () => {
+    document.querySelector(`#${openMenuName}Menu`).classList.toggle("visibleElAnimScale");
+
+    backupsMenuEl.classList.toggle("visibleElAnimScale");
+    openMenuName = "backups";
+
+    vscode.postMessage(
+        {
+            id: "fetchBackups"
+        }
+    );
 });
 
 resetStatsBtnEl.addEventListener("click", () => {
-    vscode.postMessage({ id: "resetStats" });
+    vscode.postMessage(
+        {
+            id: "resetStats"
+        }
+    );
 });
 
-window.addEventListener("message", (event) => {
+window.addEventListener("message", async (event) => {
     const messageObj = event.data;
+
+    if (messageObj.id === "getAllSettings") {
+        extensionSettingsObj = messageObj.data.settingsObj;
+    };
 
     if (messageObj.id === "getSetting" || messageObj.id === "setSetting") {
         extensionSettingsObj[messageObj.data.settingName] = messageObj.data.settingValue;
+    };
+
+    if (messageObj.id === "genWcoUrls") {
+        wcoConfig.urls = {};
+
+        wcoConfig.urls.wco = messageObj.data.wco;
+        wcoConfig.urls.schemas = messageObj.data.schemas;
     };
 
     if (messageObj.id === "fetchStatsData") {
@@ -530,6 +646,47 @@ window.addEventListener("message", (event) => {
     };
 
     if (messageObj.id === "importStatsStatus" || messageObj.id === "exportStatsStatus" || messageObj.id === "resetStatsStatus") {
-        newAlert(messageObj.data.type, accountMenuEl.querySelector("div.body"), messageObj.data.text);
+        await newAlert(messageObj.data.type, accountMenuEl.querySelector("div.body"), messageObj.data.message);
+    };
+
+    if (messageObj.id === "fetchBackups") {
+        const backupsArray = messageObj.data.backupsArray;
+
+        const loaderComponentDataObj = {
+            message: "Fetching backups..."
+        };
+        
+        const loaderComponent = await wco.render(wcoConfig.urls.wco.loader, wcoConfig.urls.schemas.loader, loaderComponentDataObj);
+
+        backupsMenuEl.querySelector("div.body > div:nth-of-type(1)").innerHTML = loaderComponent;
+
+        setTimeout(async () => {
+            if (backupsArray.length > 0) {
+                let components = "";
+
+                for (const backupObj of backupsArray) {
+                    const backupComponentDataObj = {
+                        fileName: `${backupObj.timestamp}_${backupObj.sizeb}.gz`,
+                        date: new Date(parseInt(backupObj.timestamp, 10)).toLocaleDateString("en-US"),
+                        size: parseFloat((parseInt(backupObj.sizeb, 10) / 1024).toFixed(1)),
+                        unit: "KB"
+                    };
+
+                    const backupComponent = await wco.render(wcoConfig.urls.wco.backup, wcoConfig.urls.schemas.backup, backupComponentDataObj);
+
+                    components += backupComponent;
+                };
+                
+                backupsMenuEl.querySelector("div.body > div:nth-of-type(1)").innerHTML = components;
+            } else {
+                const noBackupComponent = await wco.render(wcoConfig.urls.wco.noBackup, wcoConfig.urls.schemas.noBackup, {});
+
+                backupsMenuEl.querySelector("div.body > div:nth-of-type(1)").innerHTML = noBackupComponent;
+            };
+        }, 2500);
+    };
+
+    if (messageObj.id === "restoreBackupStatus") {
+        await newAlert(messageObj.data.type, backupsMenuEl.querySelector("div.body"), messageObj.data.message);
     };
 });
