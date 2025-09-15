@@ -4,6 +4,12 @@ All notable changes to the "Statice" extension will be documented in this file.
 
 ## [Unreleased]
 
+## [2.3.1] - 2025-09-15
+
+### Fixed
+
+- Error while updating the extension to the v2.3.0.
+
 ## [2.3.0] - 2025-09-14
 
 ### Added

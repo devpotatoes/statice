@@ -20,7 +20,7 @@ const libsArray = [
 	}
 ];
 
-const extensionVersion = "2.3.0";
+const extensionVersion = "2.3.1";
 const gitHubIssuesUrl = "https://github.com/devpotatoes/statice/issues";
 
 const getHelpActionBtnObj = {
@@ -67,6 +67,22 @@ async function checkExtensionData(extensionPath: string) {
 
 		try {
 			fs.writeFileSync(`${extensionPath}/data/stats.json`, JSON.stringify(dataObj), "utf8");
+		} catch (error) {
+			await newActionNotification("error", "An error have occurred when launching the Statice extension.", [getHelpActionBtnObj]);
+		};
+	};
+
+	if (fs.existsSync(`${extensionPath}/data/temp`) !== true) {
+		try {
+			fs.mkdirSync(`${extensionPath}/data/temp`);
+		} catch (error) {
+			await newActionNotification("error", "An error have occurred when launching the Statice extension.", [getHelpActionBtnObj]);
+		};
+	};
+
+	if (fs.existsSync(`${extensionPath}/data/backups`) !== true) {
+		try {
+			fs.mkdirSync(`${extensionPath}/data/backups`);
 		} catch (error) {
 			await newActionNotification("error", "An error have occurred when launching the Statice extension.", [getHelpActionBtnObj]);
 		};
@@ -146,9 +162,12 @@ async function checkUpdates(extensionPath: string) {
 					version: "2.3.0",
 					migrateData: () => {
 						statsFileObj.extensionVersion = "2.3.0";
-	
-						fs.mkdirSync(`${extensionPath}/data/temp`);
-						fs.mkdirSync(`${extensionPath}/data/backups`);
+					}
+				},
+				{
+					version: "2.3.1",
+					migrateData: () => {
+						statsFileObj.extensionVersion = "2.3.1";
 					}
 				}
 			];
