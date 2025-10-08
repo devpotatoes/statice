@@ -4,6 +4,12 @@ All notable changes to the "Statice" extension will be documented in this file.
 
 ## [Unreleased]
 
+## [2.4.0] - 2025-10-08
+
+### Added
+
+- Added a new setting to disable stats tracking when out of VS Code. ([GitHub issue #1](https://github.com/devpotatoes/statice/issues/1))
+
 ## [2.3.1] - 2025-09-15
 
 ### Fixed

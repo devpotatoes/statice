@@ -47,7 +47,7 @@ const libsArray = [
         defered: false
     }
 ];
-const extensionVersion = "2.3.1";
+const extensionVersion = "2.4.0";
 const gitHubIssuesUrl = "https://github.com/devpotatoes/statice/issues";
 const getHelpActionBtnObj = {
     label: "Get Help",
@@ -189,6 +189,12 @@ async function checkUpdates(extensionPath) {
                     migrateData: () => {
                         statsFileObj.extensionVersion = "2.3.1";
                     }
+                },
+                {
+                    version: "2.4.0",
+                    migrateData: () => {
+                        statsFileObj.extensionVersion = "2.4.0";
+                    }
                 }
             ];
             const currentVersionIndex = migrationsArray.findIndex(migrationObj => migrationObj.version === statsFileObj.extensionVersion);
@@ -292,19 +298,41 @@ async function activate(context) {
     statusBarItem.text = "$(info) Statice";
     statusBarItem.tooltip = "Statice is running.";
     statusBarItem.show();
+    let isWindowFocused = true;
+    let inactiveTimer = 0;
+    let isInactive = false;
+    const inactiveThreshold = 60;
+    vscode.window.onDidChangeWindowState(windowState => {
+        isWindowFocused = windowState.focused;
+        if (isWindowFocused === true) {
+            inactiveTimer = 0;
+            isInactive = false;
+        }
+        ;
+    });
     setInterval(() => {
-        const activeTextEditorObj = vscode.window.activeTextEditor;
-        if (activeTextEditorObj !== undefined) {
-            const fileExtension = activeTextEditorObj.document.uri.path.split(".").pop();
-            const fileTypeIndex = tempStatsArray.findIndex(fileTypeObj => fileTypeObj.extension === fileExtension);
-            if (fileTypeIndex !== -1) {
-                tempStatsArray[fileTypeIndex].time += 5;
+        if ((vscode.workspace.getConfiguration().get("statice.trackOnlyWhenFocused") === false) || (isInactive === false && isWindowFocused === true)) {
+            const activeTextEditorObj = vscode.window.activeTextEditor;
+            if (activeTextEditorObj !== undefined) {
+                const fileExtension = activeTextEditorObj.document.uri.path.split(".").pop();
+                const fileTypeIndex = tempStatsArray.findIndex(fileTypeObj => fileTypeObj.extension === fileExtension);
+                if (fileTypeIndex !== -1) {
+                    tempStatsArray[fileTypeIndex].time += 5;
+                }
+                else {
+                    tempStatsArray.push({
+                        extension: `${fileExtension}`,
+                        time: 5
+                    });
+                }
+                ;
             }
-            else {
-                tempStatsArray.push({
-                    extension: `${fileExtension}`,
-                    time: 5
-                });
+            ;
+        }
+        else {
+            inactiveTimer += 5;
+            if (inactiveTimer >= inactiveThreshold) {
+                isInactive = true;
             }
             ;
         }
@@ -330,20 +358,11 @@ async function activate(context) {
             ;
         }
         ;
-        const dayHistoryIndex = statsFileObj.historyArray.findIndex((dayObj) => dayObj.date === currentDateNumber);
-        if (dayHistoryIndex !== -1) {
-            statsFileObj.historyArray[dayHistoryIndex].time += 60;
-        }
-        else {
-            statsFileObj.historyArray.push({
-                date: currentDateNumber,
-                time: 60
-            });
-        }
-        ;
+        let lastMinCodingTime = 0;
         tempStatsArray.forEach(tempFileTypeObj => {
             const fileTypeIndex = statsFileObj.programmingLanguagesArray.findIndex((fileTypeObj) => fileTypeObj.extension === tempFileTypeObj.extension);
             if (fileTypeIndex !== -1) {
+                lastMinCodingTime += tempFileTypeObj.time;
                 statsFileObj.programmingLanguagesArray[fileTypeIndex].time += tempFileTypeObj.time;
             }
             else {
@@ -355,15 +374,26 @@ async function activate(context) {
             ;
         });
         tempStatsArray.length = 0;
+        const dayHistoryIndex = statsFileObj.historyArray.findIndex((dayObj) => dayObj.date === currentDateNumber);
+        if (dayHistoryIndex !== -1) {
+            statsFileObj.historyArray[dayHistoryIndex].time += lastMinCodingTime;
+        }
+        else {
+            statsFileObj.historyArray.push({
+                date: currentDateNumber,
+                time: lastMinCodingTime
+            });
+        }
+        ;
         if (workspaceFolderName !== undefined) {
             const projectIndex = statsFileObj.projectsArray.findIndex((projectObj) => projectObj.name === workspaceFolderName);
             if (projectIndex !== -1) {
-                statsFileObj.projectsArray[projectIndex].time += 60;
+                statsFileObj.projectsArray[projectIndex].time += lastMinCodingTime;
             }
             else {
                 statsFileObj.projectsArray.push({
                     name: workspaceFolderName,
-                    time: 60
+                    time: lastMinCodingTime
                 });
             }
             ;
@@ -371,7 +401,7 @@ async function activate(context) {
         ;
         try {
             fs.writeFileSync(`${extensionPath}/data/stats.json`, JSON.stringify(statsFileObj), "utf8");
-            sessionCodingTime += 60;
+            sessionCodingTime += lastMinCodingTime;
         }
         catch (error) {
             statusBarItem.tooltip = "An error occurred while updating your stats.";
@@ -379,6 +409,7 @@ async function activate(context) {
             newProgressNotification(12500, `Statice failed to update your stats due to an unexpected issue.`, true);
         }
         ;
+        lastMinCodingTime = 0;
         if (sessionCodingTime === 7200) {
             newProgressNotification(12500, "You've been coding for two hours. Time to grab a coffee !");
         }

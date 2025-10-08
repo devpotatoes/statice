@@ -24,6 +24,7 @@ const closeMenuBtnElArray = dialogBoxContainerEl.querySelectorAll("div.header > 
 const toggleSwitchElArray = bodyEl.querySelectorAll("div.toggleSwitch");
 const enableNotificationsSettingToggleSwitchEl = settingsMenuEl.querySelector("#enableNotificationsSettingToggleSwitch");
 const enableBackupsSettingToggleSwitchEl = settingsMenuEl.querySelector("#enableBackupsSettingToggleSwitch");
+const trackOnlyWhenFocusedSettingToggleSwitchEl = settingsMenuEl.querySelector("#trackOnlyWhenFocusedSettingToggleSwitch");
 const accountBtnEl = bodyEl.querySelector("button.accountBtn");
 const accountMenuEl = dialogBoxContainerEl.querySelector("#accountMenu");
 const importStatsBtnEl = accountMenuEl.querySelector("button.importStatsBtn");
@@ -335,6 +336,12 @@ settingsBtnEl.addEventListener("click", () => {
         } else {
             enableBackupsSettingToggleSwitchEl.classList.remove("on");
         };
+
+        if (extensionSettingsObj.trackOnlyWhenFocused === true) {
+            trackOnlyWhenFocusedSettingToggleSwitchEl.classList.add("on");
+        } else {
+            trackOnlyWhenFocusedSettingToggleSwitchEl.classList.remove("on");
+        };
     }, 500);
 
     dialogBoxContainerEl.classList.toggle("visibleEl");
@@ -427,6 +434,24 @@ enableBackupsSettingToggleSwitchEl.addEventListener("click", () => {
             id: "setSetting",
             data: {
                 settingName: "backups",
+                settingValue: settingStatus
+            }
+        }
+    );
+});
+
+trackOnlyWhenFocusedSettingToggleSwitchEl.addEventListener("click", () => {
+    let settingStatus = false;
+
+    if (trackOnlyWhenFocusedSettingToggleSwitchEl.classList.contains("on") === true) {
+        settingStatus = true;
+    };
+
+    vscode.postMessage(
+        {
+            id: "setSetting",
+            data: {
+                settingName: "trackOnlyWhenFocused",
                 settingValue: settingStatus
             }
         }

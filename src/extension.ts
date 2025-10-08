@@ -20,7 +20,7 @@ const libsArray = [
 	}
 ];
 
-const extensionVersion = "2.3.1";
+const extensionVersion = "2.4.0";
 const gitHubIssuesUrl = "https://github.com/devpotatoes/statice/issues";
 
 const getHelpActionBtnObj = {
@@ -169,6 +169,12 @@ async function checkUpdates(extensionPath: string) {
 					migrateData: () => {
 						statsFileObj.extensionVersion = "2.3.1";
 					}
+				},
+				{
+					version: "2.4.0",
+					migrateData: () => {
+						statsFileObj.extensionVersion = "2.4.0";
+					}
 				}
 			];
 	
@@ -288,22 +294,45 @@ export async function activate(context: vscode.ExtensionContext) {
     statusBarItem.tooltip = "Statice is running.";
 	statusBarItem.show();
 
-	setInterval(() => {
-		const activeTextEditorObj = vscode.window.activeTextEditor;
-		
-		if (activeTextEditorObj !== undefined) {
-			const fileExtension = activeTextEditorObj.document.uri.path.split(".").pop();
-			const fileTypeIndex = tempStatsArray.findIndex(fileTypeObj => fileTypeObj.extension === fileExtension);
+	let isWindowFocused = true;
 
-			if (fileTypeIndex !== -1) {
-				tempStatsArray[fileTypeIndex].time += 5;
-			} else {
-				tempStatsArray.push(
-					{
-						extension: `${fileExtension}`,
-						time: 5
-					}
-				);
+	let inactiveTimer = 0;
+	let isInactive = false;
+	const inactiveThreshold = 60;
+
+	vscode.window.onDidChangeWindowState(windowState => {
+		isWindowFocused = windowState.focused;
+		
+		if (isWindowFocused === true) {
+			inactiveTimer = 0;
+			isInactive = false;
+		};
+	});
+
+	setInterval(() => {
+		if ((vscode.workspace.getConfiguration().get("statice.trackOnlyWhenFocused") === false) || (isInactive === false && isWindowFocused === true)) { 
+			const activeTextEditorObj = vscode.window.activeTextEditor;
+			
+			if (activeTextEditorObj !== undefined) {
+				const fileExtension = activeTextEditorObj.document.uri.path.split(".").pop();
+				const fileTypeIndex = tempStatsArray.findIndex(fileTypeObj => fileTypeObj.extension === fileExtension);
+	
+				if (fileTypeIndex !== -1) {
+					tempStatsArray[fileTypeIndex].time += 5;
+				} else {
+					tempStatsArray.push(
+						{
+							extension: `${fileExtension}`,
+							time: 5
+						}
+					);
+				};
+			};
+		} else {
+			inactiveTimer += 5;
+
+			if (inactiveTimer >= inactiveThreshold) {
+				isInactive = true;
 			};
 		};
 	}, 5000);
@@ -326,24 +355,15 @@ export async function activate(context: vscode.ExtensionContext) {
 				await newProgressNotification(30000, "Statice could not read your stats file, and the temporary version is also unavailable or corrupted. Please restore a backup from your account, or contact support on GitHub if you need further assistance.", true);
 			};
 		};
-
-		const dayHistoryIndex = statsFileObj.historyArray.findIndex((dayObj: { date: number; time: number; }) => dayObj.date === currentDateNumber);
 		
-		if (dayHistoryIndex !== -1) {
-			statsFileObj.historyArray[dayHistoryIndex].time += 60;
-		} else {
-			statsFileObj.historyArray.push(
-				{
-					date: currentDateNumber,
-					time: 60
-				}
-			);
-		};
+		let lastMinCodingTime = 0;
 
 		tempStatsArray.forEach(tempFileTypeObj => {
 			const fileTypeIndex = statsFileObj.programmingLanguagesArray.findIndex((fileTypeObj: { extension: string; time: number; }) => fileTypeObj.extension === tempFileTypeObj.extension);
 			
 			if (fileTypeIndex !== -1) {
+				lastMinCodingTime += tempFileTypeObj.time;
+
 				statsFileObj.programmingLanguagesArray[fileTypeIndex].time += tempFileTypeObj.time;
 			} else {
 				statsFileObj.programmingLanguagesArray.push(
@@ -356,16 +376,29 @@ export async function activate(context: vscode.ExtensionContext) {
 		});
 		tempStatsArray.length = 0;
 
+		const dayHistoryIndex = statsFileObj.historyArray.findIndex((dayObj: { date: number; time: number; }) => dayObj.date === currentDateNumber);
+		
+		if (dayHistoryIndex !== -1) {
+			statsFileObj.historyArray[dayHistoryIndex].time += lastMinCodingTime;
+		} else {
+			statsFileObj.historyArray.push(
+				{
+					date: currentDateNumber,
+					time: lastMinCodingTime
+				}
+			);
+		};
+
 		if (workspaceFolderName !== undefined) {
 			const projectIndex = statsFileObj.projectsArray.findIndex((projectObj: { name: string; time: number; }) => projectObj.name === workspaceFolderName);
 
 			if (projectIndex !== -1) {
-				statsFileObj.projectsArray[projectIndex].time += 60;
+				statsFileObj.projectsArray[projectIndex].time += lastMinCodingTime;
 			} else {
 				statsFileObj.projectsArray.push(
 					{
 						name: workspaceFolderName,
-						time: 60
+						time: lastMinCodingTime
 					}
 				);
 			};
@@ -373,13 +406,15 @@ export async function activate(context: vscode.ExtensionContext) {
 
 		try {
 			fs.writeFileSync(`${extensionPath}/data/stats.json`, JSON.stringify(statsFileObj), "utf8");
-			sessionCodingTime += 60;
+			sessionCodingTime += lastMinCodingTime;
 		} catch (error) {
 			statusBarItem.tooltip = "An error occurred while updating your stats.";
 			statusBarItem.backgroundColor = new vscode.ThemeColor("statusBarItem.errorBackground");
 
 			newProgressNotification(12500, `Statice failed to update your stats due to an unexpected issue.`, true);
 		};
+
+		lastMinCodingTime = 0;
 
 		if (sessionCodingTime === 7200) {
 			newProgressNotification(12500, "You've been coding for two hours. Time to grab a coffee !");
